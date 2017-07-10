@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { routes } from './mocks';
-import pathToRoute from '../src/utils/pathToRoute';
+import pathToRoute from '../utils/pathToRoute';
 
 
 const makeLocation = (pathname, search = null) => ({

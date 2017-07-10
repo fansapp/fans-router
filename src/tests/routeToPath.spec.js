@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { routes } from './mocks';
-import routeToPath from '../src/utils/routeToPath';
+import routeToPath from '../utils/routeToPath';
 
 
 const tests = () => {
