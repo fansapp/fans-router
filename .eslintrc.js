@@ -4,12 +4,13 @@ module.exports = {
     mocha: true,
   },
   globals: {},
-  extends: ['airbnb'],
+  extends: ['eslint:recommended'],
   parserOptions: {
     ecmaVersion: 6,
     ecmaFeatures: {
       experimentalObjectRestSpread: true,
     },
+    sourceType: 'module',
   },
   rules: {
     'max-len': 'warn',

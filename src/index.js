@@ -6,7 +6,7 @@ import normalizeRoutes from './utils/normalizeRoutes';
 import reducer from './reducer';
 
 
-export {
+export default {
   createRouter,
   Provider: FansRouterProvider,
   Link,
