@@ -8,7 +8,7 @@ import reducer from './reducer';
 
 export {
   createRouter,
-  FansRouterProvider,
+  Provider: FansRouterProvider,
   Link,
   navigate,
   normalizeRoutes,
