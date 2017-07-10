@@ -45,7 +45,7 @@ export default (
 The routes array provided to `createRouter` should contain route objects.
 Route objects can have the following keys:
 
-### `name`
+#### `name`
 
 Type: `string`
 
@@ -54,15 +54,32 @@ When nesting routes, names will be joined following the dot notation.
 
 Example: `root.login`
 
-### `path`
+#### `path`
 
 Type: `string`
 
 The path associated to this route.
 When nesting routes, names will be joined with slashes.
 
-### `routes`
+#### `routes`
 
 Type: `array` of `object`
 
 Optional. Contains all the routes to nest in the current route's scope.
+
+## Store
+
+Routing information will be available in `store.router`, with the following structure:
+
+#### `location`
+
+Copy of the `history.location` object passed at router construction.
+
+#### `route`
+
+Informations about the current route. Includes name, path, query.
+
+#### `routes`
+
+A flattened version of the routes you provided at construction.
+Should be provided when needed.
