@@ -4,11 +4,17 @@ import history from './history';
 export default null;
 
 
-export const init = (location, routes) => ({
-  type: '@@fans-router/INITIALIZE',
-  location,
-  routes,
-});
+export const init = (location, routes) => (dispatch) => {
+  dispatch({
+    type: '@@fans-router/INITIALIZE',
+    location,
+    routes,
+  });
+
+  dispatch({
+    type: '@@fans-router/INITIALIZE.COMPLETE',
+  });
+};
 
 export const navigate = path => (dispatch) => {
   if (path === history.location.pathname) {
