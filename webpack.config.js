@@ -1,4 +1,5 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
 
 module.exports = {
@@ -22,4 +23,8 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx'],
   },
+  target: 'node',
+  externals: [nodeExternals({
+    whitelist: ['query-string'],
+  })],
 };

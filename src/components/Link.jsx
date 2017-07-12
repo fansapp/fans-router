@@ -10,7 +10,7 @@ const Link = ({ label, to, navigate, routes }) => {
     navigate(destination, routes);
   };
 
-  return <a href={destination || '/'} onClick={handleClick}>{label}</a>;
+  return <a href={to} onClick={handleClick}>{label}</a>;
 };
 
 Link.propTypes = {

@@ -1,6 +1,6 @@
 {
   "name": "fans-router",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "A simple react-redux router",
   "main": "./dist/index.js",
   "directories": {
@@ -46,7 +46,8 @@
     "react": "15.6.1",
     "react-redux": "5.0.5",
     "redux": "3.7.1",
-    "webpack": "3.0.0"
+    "webpack": "3.0.0",
+    "webpack-node-externals": "1.6.0"
   },
   "dependencies": {
     "query-string": "^4.3.4"
