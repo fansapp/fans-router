@@ -1,6 +1,6 @@
 const normalizeRoute = (route, nodeName, nodePath) => ({
   name: nodeName ? nodeName.concat('.', route.name) : route.name,
-  path: nodePath.concat(route.path),
+  path: nodePath.concat(route.path).replace('//', '/'),
 });
 
 
