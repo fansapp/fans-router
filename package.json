@@ -12,7 +12,7 @@
     "lint": "eslint src || true",
     "prepublish": "npm run build",
     "test": "NODE_ENV=test mocha --opts mocha.opts || true",
-    "travis:install": "npm install isomorphic-fetch; npm install peerDependency",
+    "travis:install": "npm install isomorphic-fetch history",
     "travis:run": "NODE_ENV=test; mocha --opts mocha.travis.opts; npm run lint"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "eslint": "^4.0.0",
     "eslint-plugin-react": "^7.1.0",
     "mocha": "^3.4.2",
+    "npm-install-peers": "^1.1.0",
     "react": "^15.6.1",
     "react-redux": "^5.0.5",
     "redux": "^3.7.1",
