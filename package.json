@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "dev": "webpack --watch",
     "lint": "eslint src || true",
     "prepublish": "npm run build",
     "test": "NODE_ENV=test mocha --opts mocha.opts || true",
