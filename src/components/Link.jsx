@@ -7,7 +7,7 @@ const Link = ({ label, to, navigate, routes }) => {
   const destination = RouteFactory.parse(to);
   const handleClick = (e) => {
     e.preventDefault();
-    navigate(destination, routes);
+    navigate(destination);
   };
 
   return <a href={to} onClick={handleClick}>{label}</a>;

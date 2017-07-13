@@ -706,7 +706,7 @@ var Link = function Link(_ref) {
   var destination = (0, _pathToRoute2.default)(to, routes);
   var handleClick = function handleClick(e) {
     e.preventDefault();
-    navigate(destination, routes);
+    navigate(destination);
   };
 
   return _react2.default.createElement(
