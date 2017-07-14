@@ -94,7 +94,7 @@ const tests = () => {
     const query = '?ignore=some';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all${query}`,
       params: {},
       query: parse(query),
     });
@@ -104,7 +104,7 @@ const tests = () => {
     const query = { ignore: 'some' };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all?${stringify(query)}`,
       params: {},
       query: parse(stringify(query)),
     });
@@ -114,7 +114,7 @@ const tests = () => {
     const query = '?missing=';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all${query}`,
       params: {},
       query: parse(query),
     });
@@ -124,7 +124,7 @@ const tests = () => {
     const query = { missing: null };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all?${stringify(query)}`,
       params: {},
       query: parse(stringify(query)),
     });
@@ -134,7 +134,7 @@ const tests = () => {
     const query = '?ignore=some&limit=10&missing=';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all${query}`,
       params: {},
       query: parse(query),
     });
@@ -144,7 +144,7 @@ const tests = () => {
     const query = { ignore: 'some', limit: 10, missing: null };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
-      path: '/products/all',
+      path: `/products/all?${stringify(query)}`,
       params: {},
       query: parse(stringify(query)),
     });
