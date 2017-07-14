@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import pathToRoute from '../utils/pathToRoute';
+import RouteFactory from '../routeFactory';
 
 
 const Link = ({ label, to, navigate, routes }) => {
-  const destination = pathToRoute(to, routes);
+  const destination = RouteFactory.parse(to);
   const handleClick = (e) => {
     e.preventDefault();
     navigate(destination, routes);
