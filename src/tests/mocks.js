@@ -1,6 +1,27 @@
 export default null;
 
 
+export const nested = [{
+  name: 'root',
+  path: '/',
+  routes: [
+    {
+      name: 'about',
+      path: '/about-us',
+    },
+    {
+      name: 'products',
+      path: '/products',
+      routes: [
+        {
+          name: 'all',
+          path: '/all',
+        },
+      ],
+    },
+  ]
+}];
+
 export const routes = [
   {
     name: 'root',
