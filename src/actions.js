@@ -4,10 +4,10 @@ import history from './history';
 export default null;
 
 
-export const init = (location, routes) => (dispatch) => {
+export const init = (route, routes) => (dispatch) => {
   dispatch({
     type: '@@fans-router/INITIALIZE',
-    location,
+    route,
     routes,
   });
 
@@ -30,8 +30,8 @@ export const navigate = path => (dispatch) => {
 };
 
 
-export const navComplete = (location, action) => ({
+export const navComplete = (route, action) => ({
   type: '@@fans-router/NAVIGATE.COMPLETE',
-  location,
+  route,
   action,
 });
