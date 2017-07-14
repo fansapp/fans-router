@@ -49,6 +49,7 @@ const tests = () => {
   it('converts a simple path', () => {
     expect(RouteFactory.parse('/about-us')).to.eql({
       name: 'root.about',
+      path: '/about-us',
       params: {},
       query: {},
     });
@@ -57,6 +58,7 @@ const tests = () => {
   it('converts a path object', () => {
     expect(RouteFactory.parse({ name: 'root.about' })).to.eql({
       name: 'root.about',
+      path: '/about-us',
       params: {},
       query: {},
     });
@@ -65,6 +67,7 @@ const tests = () => {
   it('converts a nested path', () => {
     expect(RouteFactory.parse('/products/all')).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: {},
     });
@@ -91,6 +94,7 @@ const tests = () => {
     const query = '?ignore=some';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(query),
     });
@@ -100,6 +104,7 @@ const tests = () => {
     const query = { ignore: 'some' };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(stringify(query)),
     });
@@ -109,6 +114,7 @@ const tests = () => {
     const query = '?missing=';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(query),
     });
@@ -118,6 +124,7 @@ const tests = () => {
     const query = { missing: null };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(stringify(query)),
     });
@@ -127,6 +134,7 @@ const tests = () => {
     const query = '?ignore=some&limit=10&missing=';
     expect(RouteFactory.parse(`/products/all${query}`)).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(query),
     });
@@ -136,6 +144,7 @@ const tests = () => {
     const query = { ignore: 'some', limit: 10, missing: null };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
+      path: '/products/all',
       params: {},
       query: parse(stringify(query)),
     });
