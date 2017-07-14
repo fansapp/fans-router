@@ -1,58 +1,79 @@
-import { parse } from 'query-string';
+import { parse, stringify } from 'query-string';
 
-const makeRouteObject = (name, query = null) => ({
+
+export const errorMessages = {
+  invalidRouteType: 'Unexpected route type.',
+  invalidRouteName: 'Unable to parse route.',
+  routeNotFound: 'Unable to find requested route name.',
+  invalidQueryType: 'Unexpected query type.',
+};
+
+/**
+ * Builds the structure of the route object
+ * @param {string} name The name of the route
+ * @param {object} query The url query
+ * @returns {object} The route object
+ */
+const makeRouteObject = (name, query = {}) => ({
   name,
-  params: null,
+  params: {},
   query,
 });
 
-
+/**
+ * Creates route object from path string
+ * @param {string} route The path string
+ * @param {array} routes The route context
+ * @returns {object} The route object
+*/
 const interpretStringRoute = (route, routes) => {
   const [url, query] = route.split('?');
   const component = routes.find(r => r.path === url);
 
   if (!component) {
-    return makeRouteObject('');
+    throw new Error(errorMessages.routeNotFound);
   }
 
   return makeRouteObject(component.name, query && parse(query));
 };
 
-const interpretRouteObject = (route) => {
-  if (!route.name) {
-    return makeRouteObject('');
+/**
+ * Creates route object from path object
+ * @param {object} route The path object
+ * @param {array} routes The route context
+ * @returns {object} The route object
+ */
+const interpretRouteObject = (route, routes) => {
+  const component = routes.find(r => r.name === route.name);
+
+  if (!component) {
+    throw new Error(errorMessages.routeNotFound);
   }
 
-  if (Array.isArray(route.query) || (typeof route.query) !== 'object') {
-    throw new Error('Unexpected query type.');
+  if (Array.isArray(route.query) || !['object', 'undefined'].includes(typeof route.query)) {
+    throw new Error(errorMessages.invalidQueryType);
   }
 
-  const validatedQuery = Object.keys(route.query).reduce((validated, currentQueryKey) => {
-    let currentQuery = route.query[currentQueryKey];
-    if ([null, undefined].includes(currentQuery)) {
-      currentQuery = '';
-    }
-
-    const queryType = typeof currentQuery;
-    if (['object', 'function'].includes(queryType)) {
-      throw new Error('Unexpected query value.');
-    }
-
-    return { ...validated, [currentQueryKey]: String(currentQuery) };
-  }, {});
-
-  return makeRouteObject(route.name, validatedQuery);
+  return makeRouteObject(route.name, parse(stringify(route.query)));
 };
 
 
+/**
+ * Singleton factory class
+ */
 class RouteFactory {
   init(routes) {
     this.routes = routes;
   }
 
+  /**
+   * Creates route object from path string or path object
+   * @param {string, object} route The path string or object
+   * @returns {object} The route object
+   */
   parse(route = null) {
     if ([null, undefined].includes(route)) {
-      throw new Error('Unable to parse route.');
+      throw new Error(errorMessages.invalidRouteName);
     }
 
     const routeType = Array.isArray(route) ? 'array' : typeof route;
@@ -61,9 +82,9 @@ class RouteFactory {
     case 'string':
       return interpretStringRoute(route, this.routes);
     case 'object':
-      return interpretRouteObject(route);
+      return interpretRouteObject(route, this.routes);
     default:
-      throw new Error('Unexpected route type.');
+      throw new Error(errorMessages.invalidRouteType);
     }
   }
 }
