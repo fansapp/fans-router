@@ -47,7 +47,7 @@ const interpretStringRoute = (route, routes) => {
     throw new Error(errorMessages.routeNotFound);
   }
 
-  return makeRouteObject(component.name, component.path, query && parse(query));
+  return makeRouteObject(component.name, route, query && parse(query));
 };
 
 /**
@@ -70,7 +70,8 @@ const interpretRouteObject = (route, routes) => {
     throw new Error(errorMessages.invalidQueryValue);
   }
 
-  return makeRouteObject(component.name, component.path, parse(stringify(route.query)));
+  const stringQuery = route.query ? `?${stringify(route.query)}` : '';
+  return makeRouteObject(component.name, `${component.path}${stringQuery}`, parse(stringQuery));
 };
 
 
