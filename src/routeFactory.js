@@ -15,8 +15,9 @@ export const errorMessages = {
  * @param {object} query The url query
  * @returns {object} The route object
  */
-const makeRouteObject = (name, query = {}) => ({
+const makeRouteObject = (name, path, query = {}) => ({
   name,
+  path,
   params: {},
   query,
 });
@@ -46,7 +47,7 @@ const interpretStringRoute = (route, routes) => {
     throw new Error(errorMessages.routeNotFound);
   }
 
-  return makeRouteObject(component.name, query && parse(query));
+  return makeRouteObject(component.name, route, query && parse(query));
 };
 
 /**
@@ -69,7 +70,8 @@ const interpretRouteObject = (route, routes) => {
     throw new Error(errorMessages.invalidQueryValue);
   }
 
-  return makeRouteObject(route.name, parse(stringify(route.query)));
+  const stringQuery = route.query ? `?${stringify(route.query)}` : '';
+  return makeRouteObject(component.name, `${component.path}${stringQuery}`, parse(stringQuery));
 };
 
 
