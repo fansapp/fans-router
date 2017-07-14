@@ -80,6 +80,11 @@ const tests = () => {
     expect(() => RouteFactory.parse({ name: 'root.products.all', query: '' })).to.throw(errorMessages.invalidQueryType);
   });
 
+  it('throws error when query something other than an object', () => {
+    const query = { ok: 12, notOk: { a: 2 } };
+    expect(() => RouteFactory.parse({ name: 'root.products.all', query })).to.throw(errorMessages.invalidQueryValue);
+  });
+
   // query parsing
 
   it('converts a path with a query param', () => {
@@ -111,15 +116,6 @@ const tests = () => {
 
   it('converts a path object with an empty query param', () => {
     const query = { missing: null };
-    expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
-      name: 'root.products.all',
-      params: {},
-      query: parse(stringify(query)),
-    });
-  });
-
-  it('throws error when query is a nested object', () => {
-    const query = { ok: 12, notOk: { a: 2 } };
     expect(RouteFactory.parse({ name: 'root.products.all', query })).to.eql({
       name: 'root.products.all',
       params: {},

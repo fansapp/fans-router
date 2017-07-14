@@ -6,6 +6,7 @@ export const errorMessages = {
   invalidRouteName: 'Unable to parse route.',
   routeNotFound: 'Unable to find requested route name.',
   invalidQueryType: 'Unexpected query type.',
+  invalidQueryValue: 'Unexpected query value.',
 };
 
 /**
@@ -19,6 +20,17 @@ const makeRouteObject = (name, query = {}) => ({
   params: {},
   query,
 });
+
+
+/**
+ * Checks at least 1 of the queries has an unexpected type
+ * @param {object} name The queries
+ * @returns {boolean} True if has errors
+ */
+const hasUnexpectedQueryType = (query) => (
+  Object.keys(query)
+    .some(r => query[r] && ['object', 'function'].includes(typeof query[r]))
+);
 
 /**
  * Creates route object from path string
@@ -44,14 +56,17 @@ const interpretStringRoute = (route, routes) => {
  * @returns {object} The route object
  */
 const interpretRouteObject = (route, routes) => {
-  const component = routes.find(r => r.name === route.name);
+  if (Array.isArray(route.query) || !['object', 'undefined'].includes(typeof route.query)) {
+    throw new Error(errorMessages.invalidQueryType);
+  }
 
+  const component = routes.find(r => r.name === route.name);
   if (!component) {
     throw new Error(errorMessages.routeNotFound);
   }
 
-  if (Array.isArray(route.query) || !['object', 'undefined'].includes(typeof route.query)) {
-    throw new Error(errorMessages.invalidQueryType);
+  if (route.query && hasUnexpectedQueryType(route.query)) {
+    throw new Error(errorMessages.invalidQueryValue);
   }
 
   return makeRouteObject(route.name, parse(stringify(route.query)));
