@@ -1,47 +1,63 @@
 import { expect } from 'chai';
 import { parse, stringify } from 'query-string';
 
-import { routes } from './mocks';
-import RouteFactory, { errorMessages } from '../routeFactory';
+import { routes, nested } from './mocks';
+import RouteFactory from '../routeFactory';
+import { errorMessages }from '../constants';
 
 const tests = () => {
 
   beforeEach(function() {
-    RouteFactory.init(routes);
+    RouteFactory.init(routes, nested);
   });
 
   // parse function error handling
 
   it('throws error when no arguments', () => {
-    expect(() => RouteFactory.parse()).to.throw(errorMessages.invalidRouteName);
+    expect(() => RouteFactory.parse())
+      .to.throw(errorMessages.invalidRouteName);
   });
 
   it('throws error on null', () => {
-    expect(() => RouteFactory.parse(null)).to.throw(errorMessages.invalidRouteName);
+    expect(() => RouteFactory.parse(null))
+      .to.throw(errorMessages.invalidRouteName);
   });
 
   it('throws error on undefined', () => {
-    expect(() => RouteFactory.parse(undefined)).to.throw(errorMessages.invalidRouteName);
+    expect(() => RouteFactory.parse(undefined))
+      .to.throw(errorMessages.invalidRouteName);
   });
 
   it('throws error on array', () => {
-    expect(() => RouteFactory.parse([])).to.throw(errorMessages.invalidRouteType);
+    expect(() => RouteFactory.parse([]))
+      .to.throw(errorMessages.invalidRouteType);
   });
 
   it('throws error on boolean', () => {
-    expect(() => RouteFactory.parse(true)).to.throw(errorMessages.invalidRouteType);
+    expect(() => RouteFactory.parse(true))
+      .to.throw(errorMessages.invalidRouteType);
   });
 
   it('throws error on number', () => {
-    expect(() => RouteFactory.parse(42)).to.throw(errorMessages.invalidRouteType);
+    expect(() => RouteFactory.parse(42))
+      .to.throw(errorMessages.invalidRouteType);
   });
 
   it('throws error on empty path', () => {
-    expect(() => RouteFactory.parse('')).to.throw(errorMessages.routeNotFound);
+    expect(() => RouteFactory.parse(''))
+      .to.throw(errorMessages.routeNotFound);
   });
 
   it('throws error on empty path name in object', () => {
-    expect(() => RouteFactory.parse({ name: '' })).to.throw(errorMessages.routeNotFound);
+    expect(() => RouteFactory.parse({ name: '' }))
+      .to.throw(errorMessages.routeNotFound);
+  });
+
+  // nested routes parsing error handling
+
+  it('converts a nested path', () => {
+    expect(() => RouteFactory.parse('/products/fail'))
+      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, "'fail'"));
   });
 
   // route parsing
@@ -76,16 +92,24 @@ const tests = () => {
   // query parsing error handling
 
   it('throws error when query is an array', () => {
-    expect(() => RouteFactory.parse({ name: 'root.products.all', query: [] })).to.throw(errorMessages.invalidQueryType);
+    expect(() => RouteFactory.parse({
+      name: 'root.products.all',
+      query: [],
+    })).to.throw(errorMessages.invalidQueryType);
   });
 
   it('throws error when query something other than an object', () => {
-    expect(() => RouteFactory.parse({ name: 'root.products.all', query: '' })).to.throw(errorMessages.invalidQueryType);
+    expect(() => RouteFactory.parse({
+      name: 'root.products.all',
+      query: '',
+    })).to.throw(errorMessages.invalidQueryType);
   });
 
   it('throws error when query something other than an object', () => {
     const query = { ok: 12, notOk: { a: 2 } };
-    expect(() => RouteFactory.parse({ name: 'root.products.all', query })).to.throw(errorMessages.invalidQueryValue);
+    expect(() => RouteFactory.parse({
+      name: 'root.products.all',
+      query })).to.throw(errorMessages.invalidQueryValue);
   });
 
   // query parsing
@@ -147,6 +171,53 @@ const tests = () => {
       path: `/products/all?${stringify(query)}`,
       params: {},
       query: parse(stringify(query)),
+    });
+  });
+
+  // dynamic parameter parsing error handling
+
+  it('throws error on missing dynamic parameter', () => {
+    expect(() => RouteFactory.parse({
+      name: 'root.clients.id.edit',
+      params: {
+        clientIds: 8,
+        test: 'ignore me',
+      },
+    })).to.throw(errorMessages.paramNotFound.replace(/{.*?}/g, "'clientId'"));
+  });
+
+  // dynamic parameter parsing
+
+  it('parses a nested path with dynamic parameters', () => {
+    expect(RouteFactory.parse('/clients/8/edit')).to.eql({
+      name: 'root.clients.id.edit',
+      path: '/clients/8/edit',
+      params: { clientId: '8' },
+      query: {},
+    });
+  });
+
+  it('parses a nested path with an empty dynamic parameters', () => {
+    expect(RouteFactory.parse('/clients//edit')).to.eql({
+      name: 'root.clients.id.edit',
+      path: '/clients//edit',
+      params: { clientId: '' },
+      query: {},
+    });
+  });
+
+  it('parses a nested path object with dynamic parameters', () => {
+    expect(RouteFactory.parse({
+      name: 'root.clients.id.edit',
+      params: {
+        clientId: 8,
+        test: 'ignore me',
+      },
+    })).to.eql({
+      name: 'root.clients.id.edit',
+      path: '/clients/8/edit',
+      params: { clientId: 8 },
+      query: {},
     });
   });
 };

@@ -5,7 +5,7 @@ import RouteFactory from './routeFactory';
 
 export default routes => {
   const normalizedRoutes = normalizeRoutes(routes);
-  RouteFactory.init(normalizedRoutes);
+  RouteFactory.init(normalizedRoutes, routes);
 
   return {
     history,

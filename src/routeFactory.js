@@ -1,37 +1,13 @@
 import { parse, stringify } from 'query-string';
+import { errorMessages } from './constants';
+import {
+  makeRouteObject,
+  hasUnexpectedQueryType,
+  replacePathParamsByValues,
+  validateStringPath,
+  validateObjectPathParams,
+} from './utils/routerFactory';
 
-
-export const errorMessages = {
-  invalidRouteType: 'Unexpected route type.',
-  invalidRouteName: 'Unable to parse route.',
-  routeNotFound: 'Unable to find requested route name.',
-  invalidQueryType: 'Unexpected query type.',
-  invalidQueryValue: 'Unexpected query value.',
-};
-
-/**
- * Builds the structure of the route object
- * @param {string} name The name of the route
- * @param {object} query The url query
- * @returns {object} The route object
- */
-const makeRouteObject = (name, path, query = {}) => ({
-  name,
-  path,
-  params: {},
-  query,
-});
-
-
-/**
- * Checks at least 1 of the queries has an unexpected type
- * @param {object} name The queries
- * @returns {boolean} True if has errors
- */
-const hasUnexpectedQueryType = (query) => (
-  Object.keys(query)
-    .some(r => query[r] && ['object', 'function'].includes(typeof query[r]))
-);
 
 /**
  * Creates route object from path string
@@ -39,16 +15,23 @@ const hasUnexpectedQueryType = (query) => (
  * @param {array} routes The route context
  * @returns {object} The route object
 */
-const interpretStringRoute = (route, routes) => {
+const interpretStringRoute = (route, routes, nestedRoutes) => {
   const [url, query] = route.split('?');
-  const component = routes.find(r => r.path === url);
+  const nodes = url.replace(/^\/|\/$/g, '');
 
-  if (!component) {
+  if (!nodes) {
     throw new Error(errorMessages.routeNotFound);
   }
 
-  return makeRouteObject(component.name, route, query && parse(query));
+  try {
+    const validatedPath = validateStringPath(nodes.split('/'), nestedRoutes[0]);
+    return makeRouteObject(validatedPath.name, route, query && parse(query), validatedPath.params);
+  }
+  catch ({ message }) {
+    throw new Error(errorMessages.invalidNestedRoute.replace(/{.*?}/g, `'${message}'`));
+  }
 };
+
 
 /**
  * Creates route object from path object
@@ -70,8 +53,26 @@ const interpretRouteObject = (route, routes) => {
     throw new Error(errorMessages.invalidQueryValue);
   }
 
+  let params = {};
+  const { name, path } = component;
+  const reqParams = path.replace(/^\/|\/$/g, '').split('/').filter(p => p.startsWith(':'));
+
+  if (reqParams.length > 0) {
+    try {
+      params = validateObjectPathParams(route.params, reqParams);
+    }
+    catch ({ message }) {
+      throw new Error(errorMessages.paramNotFound.replace(/{.*?}/g, `'${message}'`));
+    }
+  }
+
   const stringQuery = route.query ? `?${stringify(route.query)}` : '';
-  return makeRouteObject(component.name, `${component.path}${stringQuery}`, parse(stringQuery));
+  return makeRouteObject(
+    name,
+    `${replacePathParamsByValues(path, params, reqParams)}${stringQuery}`,
+    parse(stringQuery),
+    params
+  );
 };
 
 
@@ -79,8 +80,9 @@ const interpretRouteObject = (route, routes) => {
  * Singleton factory class
  */
 class RouteFactory {
-  init(routes) {
+  init(routes, nestedRoutes) {
     this.routes = routes;
+    this.nestedRoutes = nestedRoutes;
   }
 
   /**
@@ -97,7 +99,7 @@ class RouteFactory {
 
     switch (routeType) {
     case 'string':
-      return interpretStringRoute(route, this.routes);
+      return interpretStringRoute(route, this.routes, this.nestedRoutes);
     case 'object':
       return interpretRouteObject(route, this.routes);
     default:

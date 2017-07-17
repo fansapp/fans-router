@@ -74,52 +74,20 @@ module.exports =
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.errorMessages = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var _queryString = __webpack_require__(10);
 
+var _constants = __webpack_require__(13);
+
+var _routerFactory = __webpack_require__(14);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var errorMessages = exports.errorMessages = {
-  invalidRouteType: 'Unexpected route type.',
-  invalidRouteName: 'Unable to parse route.',
-  routeNotFound: 'Unable to find requested route name.',
-  invalidQueryType: 'Unexpected query type.',
-  invalidQueryValue: 'Unexpected query value.'
-};
-
-/**
- * Builds the structure of the route object
- * @param {string} name The name of the route
- * @param {object} query The url query
- * @returns {object} The route object
- */
-var makeRouteObject = function makeRouteObject(name, path) {
-  var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-  return {
-    name: name,
-    path: path,
-    params: {},
-    query: query
-  };
-};
-
-/**
- * Checks at least 1 of the queries has an unexpected type
- * @param {object} name The queries
- * @returns {boolean} True if has errors
- */
-var hasUnexpectedQueryType = function hasUnexpectedQueryType(query) {
-  return Object.keys(query).some(function (r) {
-    return query[r] && ['object', 'function'].includes(_typeof(query[r]));
-  });
-};
 
 /**
  * Creates route object from path string
@@ -127,21 +95,26 @@ var hasUnexpectedQueryType = function hasUnexpectedQueryType(query) {
  * @param {array} routes The route context
  * @returns {object} The route object
 */
-var interpretStringRoute = function interpretStringRoute(route, routes) {
+var interpretStringRoute = function interpretStringRoute(route, routes, nestedRoutes) {
   var _route$split = route.split('?'),
       _route$split2 = _slicedToArray(_route$split, 2),
       url = _route$split2[0],
       query = _route$split2[1];
 
-  var component = routes.find(function (r) {
-    return r.path === url;
-  });
+  var nodes = url.replace(/^\/|\/$/g, '');
 
-  if (!component) {
-    throw new Error(errorMessages.routeNotFound);
+  if (!nodes) {
+    throw new Error(_constants.errorMessages.routeNotFound);
   }
 
-  return makeRouteObject(component.name, route, query && (0, _queryString.parse)(query));
+  try {
+    var validatedPath = (0, _routerFactory.validateStringPath)(nodes.split('/'), nestedRoutes[0]);
+    return (0, _routerFactory.makeRouteObject)(validatedPath.name, route, query && (0, _queryString.parse)(query), validatedPath.params);
+  } catch (_ref) {
+    var message = _ref.message;
+
+    throw new Error(_constants.errorMessages.invalidNestedRoute.replace(/{.*?}/g, '\'' + message + '\''));
+  }
 };
 
 /**
@@ -152,22 +125,40 @@ var interpretStringRoute = function interpretStringRoute(route, routes) {
  */
 var interpretRouteObject = function interpretRouteObject(route, routes) {
   if (Array.isArray(route.query) || !['object', 'undefined'].includes(_typeof(route.query))) {
-    throw new Error(errorMessages.invalidQueryType);
+    throw new Error(_constants.errorMessages.invalidQueryType);
   }
 
   var component = routes.find(function (r) {
     return r.name === route.name;
   });
   if (!component) {
-    throw new Error(errorMessages.routeNotFound);
+    throw new Error(_constants.errorMessages.routeNotFound);
   }
 
-  if (route.query && hasUnexpectedQueryType(route.query)) {
-    throw new Error(errorMessages.invalidQueryValue);
+  if (route.query && (0, _routerFactory.hasUnexpectedQueryType)(route.query)) {
+    throw new Error(_constants.errorMessages.invalidQueryValue);
+  }
+
+  var params = {};
+  var name = component.name,
+      path = component.path;
+
+  var reqParams = path.replace(/^\/|\/$/g, '').split('/').filter(function (p) {
+    return p.startsWith(':');
+  });
+
+  if (reqParams.length > 0) {
+    try {
+      params = (0, _routerFactory.validateObjectPathParams)(route.params, reqParams);
+    } catch (_ref2) {
+      var message = _ref2.message;
+
+      throw new Error(_constants.errorMessages.paramNotFound.replace(/{.*?}/g, '\'' + message + '\''));
+    }
   }
 
   var stringQuery = route.query ? '?' + (0, _queryString.stringify)(route.query) : '';
-  return makeRouteObject(component.name, '' + component.path + stringQuery, (0, _queryString.parse)(stringQuery));
+  return (0, _routerFactory.makeRouteObject)(name, '' + (0, _routerFactory.replacePathParamsByValues)(path, params, reqParams) + stringQuery, (0, _queryString.parse)(stringQuery), params);
 };
 
 /**
@@ -181,8 +172,9 @@ var RouteFactory = function () {
 
   _createClass(RouteFactory, [{
     key: 'init',
-    value: function init(routes) {
+    value: function init(routes, nestedRoutes) {
       this.routes = routes;
+      this.nestedRoutes = nestedRoutes;
     }
 
     /**
@@ -197,18 +189,18 @@ var RouteFactory = function () {
       var route = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
       if ([null, undefined].includes(route)) {
-        throw new Error(errorMessages.invalidRouteName);
+        throw new Error(_constants.errorMessages.invalidRouteName);
       }
 
       var routeType = Array.isArray(route) ? 'array' : typeof route === 'undefined' ? 'undefined' : _typeof(route);
 
       switch (routeType) {
         case 'string':
-          return interpretStringRoute(route, this.routes);
+          return interpretStringRoute(route, this.routes, this.nestedRoutes);
         case 'object':
           return interpretRouteObject(route, this.routes);
         default:
-          throw new Error(errorMessages.invalidRouteType);
+          throw new Error(_constants.errorMessages.invalidRouteType);
       }
     }
   }]);
@@ -217,6 +209,7 @@ var RouteFactory = function () {
 }();
 
 exports.default = new RouteFactory();
+module.exports = exports['default'];
 
 /***/ }),
 /* 1 */
@@ -365,11 +358,11 @@ var _createRouter = __webpack_require__(8);
 
 var _createRouter2 = _interopRequireDefault(_createRouter);
 
-var _Provider = __webpack_require__(13);
+var _Provider = __webpack_require__(15);
 
 var _Provider2 = _interopRequireDefault(_Provider);
 
-var _LinkContainer = __webpack_require__(14);
+var _LinkContainer = __webpack_require__(16);
 
 var _LinkContainer2 = _interopRequireDefault(_LinkContainer);
 
@@ -379,7 +372,7 @@ var _normalizeRoutes = __webpack_require__(3);
 
 var _normalizeRoutes2 = _interopRequireDefault(_normalizeRoutes);
 
-var _reducer = __webpack_require__(17);
+var _reducer = __webpack_require__(19);
 
 var _reducer2 = _interopRequireDefault(_reducer);
 
@@ -422,7 +415,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function (routes) {
   var normalizedRoutes = (0, _normalizeRoutes2.default)(routes);
-  _routeFactory2.default.init(normalizedRoutes);
+  _routeFactory2.default.init(normalizedRoutes, routes);
 
   return {
     history: _history2.default,
@@ -672,6 +665,149 @@ module.exports = require("object-assign");
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = null;
+var errorMessages = exports.errorMessages = {
+  invalidRouteType: 'Unexpected route type.',
+  invalidRouteName: 'Unable to parse route.',
+  routeNotFound: 'Unable to find requested route name.',
+  invalidQueryType: 'Unexpected query type.',
+  invalidQueryValue: 'Unexpected query value.',
+  paramNotFound: 'Missing required dynamic parameter {param}.',
+  invalidNestedRoute: 'Invalid route: {route} node not found.'
+};
+
+/***/ }),
+/* 14 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+/**
+ * Builds the structure of the route object
+ * @param {string} name The name of the route
+ * @param {object} query The url query
+ * @returns {object} The route object
+ */
+var makeRouteObject = exports.makeRouteObject = function makeRouteObject(name, path) {
+  var query = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var params = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  return {
+    name: name,
+    path: path,
+    params: params,
+    query: query
+  };
+};
+
+/**
+ * Checks at least 1 of the queries has an unexpected type
+ * @param {object} name The queries
+ * @returns {boolean} True if has errors
+ */
+var hasUnexpectedQueryType = exports.hasUnexpectedQueryType = function hasUnexpectedQueryType(query) {
+  return Object.keys(query).some(function (r) {
+    return query[r] && ['object', 'function'].includes(_typeof(query[r]));
+  });
+};
+
+/**
+ * Replaces all dynamic parameters inside path by their value
+ * Example: clients/:id/edit --> clients/9/edit
+ * @param {string} path The starting path
+ * @param {object} params The parameters the user specified
+ * @param {object} requiredParams The needed parameters in the path
+ * @returns {string} The replaced path
+ */
+var replacePathParamsByValues = exports.replacePathParamsByValues = function replacePathParamsByValues(path, params, requiredParams) {
+  return requiredParams.reduce(function (builtPath, curReqParam) {
+    return builtPath.replace(curReqParam, String(params[curReqParam.slice(1, curReqParam.length)]));
+  }, path);
+};
+
+/**
+ * Validates if the user provided all the necessary parameters for this path
+ * @param {object} params The parameters the user specified
+ * @param {object} requiredParams The needed parameters in the path
+ * @returns {object} The validated parameters
+ */
+var validateObjectPathParams = exports.validateObjectPathParams = function validateObjectPathParams(params, requiredParams) {
+  return requiredParams.map(function (p) {
+    return p.slice(1, p.length);
+  }).reduce(function (parameters, currentParam) {
+    if (!params.hasOwnProperty(currentParam)) {
+      throw new Error(currentParam);
+    }
+
+    return _extends({}, parameters, _defineProperty({}, currentParam, params[currentParam]));
+  }, {});
+};
+
+/**
+ * Validates and parses dynamic parameters in a string route
+ * @param {array} splitUrl The number of nodes remaining to travel
+ * @param {object} currentNode The current valid node
+ * @param {object} params The dynamic parameters
+ * @param {string} name The name of the current traveled path
+ * @returns {object} The name of the path and the dynamic parameters
+ */
+var validateStringPath = exports.validateStringPath = function validateStringPath() {
+  var splitUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var currentNode = arguments[1];
+  var params = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var name = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'root';
+
+  var newParams = params;
+
+  if (splitUrl.length === 0) {
+    return {
+      params: params,
+      name: name
+    };
+  }
+
+  var nextNode = currentNode.routes.find(function (r) {
+    var path = r.path.replace(/^\/|\/$/g, '');
+
+    if (path.startsWith(':')) {
+      newParams[path.slice(1, path.length)] = splitUrl[0];
+      return r;
+    }
+
+    if (r.path.replace(/^\/|\/$/g, '') === splitUrl[0]) {
+      return r;
+    }
+
+    return false;
+  });
+
+  if (!nextNode) {
+    throw new Error(splitUrl[0]);
+  }
+
+  return validateStringPath(splitUrl.slice(1, splitUrl.length), nextNode, newParams, name.concat('.' + nextNode.name));
+};
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -757,7 +893,7 @@ exports.default = FansRouterProvider;
 module.exports = exports['default'];
 
 /***/ }),
-/* 14 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -767,9 +903,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _reactRedux = __webpack_require__(15);
+var _reactRedux = __webpack_require__(17);
 
-var _Link = __webpack_require__(16);
+var _Link = __webpack_require__(18);
 
 var _Link2 = _interopRequireDefault(_Link);
 
@@ -796,13 +932,13 @@ exports.default = (0, _reactRedux.connect)(mapState, mapActions)(_Link2.default)
 module.exports = exports['default'];
 
 /***/ }),
-/* 15 */
+/* 17 */
 /***/ (function(module, exports) {
 
 module.exports = require("react-redux");
 
 /***/ }),
-/* 16 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -856,7 +992,7 @@ exports.default = Link;
 module.exports = exports['default'];
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
