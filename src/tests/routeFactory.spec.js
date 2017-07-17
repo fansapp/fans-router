@@ -62,6 +62,15 @@ const tests = () => {
 
   // route parsing
 
+  it('parses /', () => {
+    expect(RouteFactory.parse('/')).to.eql({
+      name: 'root',
+      path: '/',
+      params: {},
+      query: {},
+    });
+  });
+
   it('converts a simple path', () => {
     expect(RouteFactory.parse('/about-us')).to.eql({
       name: 'root.about',

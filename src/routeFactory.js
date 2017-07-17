@@ -14,13 +14,16 @@ import {
  * @param {string} route The path string
  * @param {array} routes The route context
  * @returns {object} The route object
-*/
+ */
 const interpretStringRoute = (route, nestedRoutes) => {
   const [url, query] = route.split('?');
-  const nodes = url.replace(/^\/|\/$/g, '');
-
-  if (!nodes) {
+  if (!url) {
     throw new Error(errorMessages.routeNotFound);
+  }
+
+  const nodes = url.replace(/^\/|\/$/g, '');
+  if (!nodes) {
+    return makeRouteObject('root', '/');
   }
 
   try {
@@ -31,7 +34,6 @@ const interpretStringRoute = (route, nestedRoutes) => {
     throw new Error(errorMessages.invalidNestedRoute.replace(/{.*?}/g, `'${message}'`));
   }
 };
-
 
 /**
  * Creates route object from path object
