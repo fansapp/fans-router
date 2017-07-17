@@ -1,6 +1,6 @@
 {
   "name": "fans-router",
-  "version": "0.7.0-alpha1",
+  "version": "0.7.0",
   "description": "A simple react-redux router",
   "main": "./dist/index.js",
   "directories": {
