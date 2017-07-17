@@ -85,7 +85,7 @@ export const validateStringPath = (splitUrl = [], currentNode, params = {}, name
       return r;
     }
 
-    if (r.path.replace(/^\/|\/$/g, '') === splitUrl[0]) {
+    if (path === splitUrl[0]) {
       return r;
     }
 

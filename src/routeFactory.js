@@ -15,7 +15,7 @@ import {
  * @param {array} routes The route context
  * @returns {object} The route object
 */
-const interpretStringRoute = (route, routes, nestedRoutes) => {
+const interpretStringRoute = (route, nestedRoutes) => {
   const [url, query] = route.split('?');
   const nodes = url.replace(/^\/|\/$/g, '');
 
@@ -99,7 +99,7 @@ class RouteFactory {
 
     switch (routeType) {
     case 'string':
-      return interpretStringRoute(route, this.routes, this.nestedRoutes);
+      return interpretStringRoute(route, this.nestedRoutes);
     case 'object':
       return interpretRouteObject(route, this.routes);
     default:
