@@ -33,7 +33,7 @@ export const hasUnexpectedQueryType = (query) => (
  */
 export const replacePathParamsByValues = (path, params, requiredParams) => (
   requiredParams.reduce((builtPath, curReqParam) => (
-    builtPath.replace(curReqParam, String(params[curReqParam.slice(1, curReqParam.length)]))
+    builtPath.replace(curReqParam, params[curReqParam.slice(1, curReqParam.length)])
   ), path)
 );
 
@@ -51,7 +51,7 @@ export const validateObjectPathParams = (params, requiredParams) => (
         throw new Error(currentParam);
       }
 
-      return { ...parameters, [currentParam]: params[currentParam] };
+      return { ...parameters, [currentParam]: String(params[currentParam]) };
     }, {})
 );
 
@@ -78,6 +78,9 @@ export const validateStringPath = (splitUrl = [], currentNode, params = {}, name
     const path = r.path.replace(/^\/|\/$/g, '');
 
     if (path.startsWith(':')) {
+      if (!splitUrl[0]) {
+        throw new Error(splitUrl[0]);
+      }
       newParams[path.slice(1, path.length)] = splitUrl[0];
       return r;
     }

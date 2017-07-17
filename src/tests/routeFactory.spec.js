@@ -186,6 +186,11 @@ const tests = () => {
     })).to.throw(errorMessages.paramNotFound.replace(/{.*?}/g, "'clientId'"));
   });
 
+  it('parses a nested path with an empty dynamic parameters', () => {
+    expect(() => RouteFactory.parse('/clients//edit'))
+      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, "''"));
+  });
+
   // dynamic parameter parsing
 
   it('parses a nested path with dynamic parameters', () => {
@@ -193,15 +198,6 @@ const tests = () => {
       name: 'root.clients.id.edit',
       path: '/clients/8/edit',
       params: { clientId: '8' },
-      query: {},
-    });
-  });
-
-  it('parses a nested path with an empty dynamic parameters', () => {
-    expect(RouteFactory.parse('/clients//edit')).to.eql({
-      name: 'root.clients.id.edit',
-      path: '/clients//edit',
-      params: { clientId: '' },
       query: {},
     });
   });
@@ -216,7 +212,7 @@ const tests = () => {
     })).to.eql({
       name: 'root.clients.id.edit',
       path: '/clients/8/edit',
-      params: { clientId: 8 },
+      params: { clientId: '8' },
       query: {},
     });
   });
