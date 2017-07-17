@@ -1,20 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RouteFactory from '../routeFactory';
 
 
-const Link = ({ label, to, navigate }) => {
-  const { path } = RouteFactory.parse(to);
+const Link = ({ children, to, navigate }) => {
   const handleClick = (e) => {
     e.preventDefault();
-    navigate(path);
+    navigate(to);
   };
 
-  return <a href={to} onClick={handleClick}>{label}</a>;
+  return <a href={to} onClick={handleClick}>{children}</a>;
 };
 
 Link.propTypes = {
-  label: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
   to: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
 };
