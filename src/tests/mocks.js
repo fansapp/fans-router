@@ -19,7 +19,7 @@ export const nested = [{
         },
       ],
     },
-  ]
+  ],
 }];
 
 export const routes = [

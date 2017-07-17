@@ -1,10 +1,9 @@
 module.exports = {
   env: {
-    node: true,
     mocha: true,
   },
   globals: {},
-  extends: ['eslint:recommended'],
+  extends: ['eslint:recommended', 'plugin:react/recommended'],
   parserOptions: {
     ecmaVersion: 6,
     ecmaFeatures: {
@@ -16,5 +15,12 @@ module.exports = {
   plugins: ['react'],
   rules: {
     'max-len': ['warn', 100],
+    'comma-dangle': ['error', {
+      arrays: 'always-multiline',
+      objects: 'always-multiline',
+      imports: 'always-multiline',
+      exports: 'always-multiline',
+      functions: 'ignore',
+    }],
   },
 };
