@@ -67,6 +67,28 @@ const tests = () => {
       .to.throw(errorMessages.invalidTo);
   });
 
+  it('handles unexisting "to" route', () => {
+    const mw = [
+      {
+        to: 'root.fail',
+        call: promise1,
+      },
+    ];
+    expect(() => MiddlewareController.init(mw, routes))
+      .to.throw(errorMessages.invalidMWRoute.replace(/{.*?}/g, 'root.fail'));
+  });
+
+  it('handles unexisting "to" route in array', () => {
+    const mw = [
+      {
+        to: ['root.about', 'root.fail'],
+        call: promise1,
+      },
+    ];
+    expect(() => MiddlewareController.init(mw, routes))
+      .to.throw(errorMessages.invalidMWRoute.replace(/{.*?}/g, 'root.fail'));
+  });
+
   it('handles unexpected "call" type', () => {
     const mw = [
       {
@@ -125,16 +147,16 @@ const tests = () => {
       .to.throw(errorMessages.invalidFunction.replace(/{.*?}/g, 'shouldNavigate'));
   });
 
-  it('handles unexpected "onNavigationCancel" type', () => {
+  it('handles unexpected "onNavigationCancelled" type', () => {
     const mw = [
       {
         to: 'root.about',
         call: promise1,
-        onNavigationCancel: null,
+        onNavigationCancelled: null,
       },
     ];
     expect(() => MiddlewareController.init(mw, routes))
-      .to.throw(errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancel'));
+      .to.throw(errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancelled'));
   });
 
   // middleware validation
@@ -219,7 +241,7 @@ const tests = () => {
         to: ['root.about'],
         call: [promise1],
         shouldNavigate: () => true,
-        onNavigationCancel: () => true,
+        onNavigationCancelled: () => true,
       },
     ];
     MiddlewareController.init(mw, routes);

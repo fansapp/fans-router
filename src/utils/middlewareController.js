@@ -1,7 +1,7 @@
 import { errorMessages } from '../constants';
 
 
-export const validateMiddlewares = (middlewares, routes) => middlewares.reduce((mws, mw) => {
+export const validateMiddlewares = (middlewares, routes) => middlewares.map((mw) => {
   const newMw = {};
 
   if (!mw.hasOwnProperty('to') || !mw.hasOwnProperty('call')) {
@@ -35,9 +35,11 @@ export const validateMiddlewares = (middlewares, routes) => middlewares.reduce((
 
   // validate if 'to' targets an existing route
   const routeNames = routes.map( r => r.name);
-  if (!newMw.to.some(t => routeNames.includes(t))) {
-    throw new Error(errorMessages.invalidMWRoute.replace(/{.*?}/g, mw.to));
-  }
+  newMw.to.forEach(t => {
+    if(!routeNames.includes(t)) {
+      throw new Error(errorMessages.invalidMWRoute.replace(/{.*?}/g, t));
+    }
+  });
 
   // validate 'onResolve'
   if (!['function', 'undefined'].includes(typeof mw.onResolve)) {
@@ -60,15 +62,12 @@ export const validateMiddlewares = (middlewares, routes) => middlewares.reduce((
     newMw.shouldNavigate = mw.shouldNavigate;
   }
 
-  // validate 'onNavigationCancel'
-  if (!['function', 'undefined'].includes(typeof mw.onNavigationCancel)) {
-    throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancel'));
-  } else if ((typeof mw.onNavigationCancel) === 'function') {
-    newMw.onNavigationCancel = mw.onNavigationCancel;
+  // validate 'onNavigationCancelled'
+  if (!['function', 'undefined'].includes(typeof mw.onNavigationCancelled)) {
+    throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancelled'));
+  } else if ((typeof mw.onNavigationCancelled) === 'function') {
+    newMw.onNavigationCancelled = mw.onNavigationCancelled;
   }
 
-  return [
-    ...mws,
-    newMw,
-  ];
-}, []);
+  return newMw;
+});
