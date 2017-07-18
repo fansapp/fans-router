@@ -1,3 +1,4 @@
+import actionTypes from './constants/actionTypes';
 import createRouter from './createRouter';
 import FansRouterProvider from './components/Provider';
 import Link from './components/LinkContainer';
@@ -7,6 +8,7 @@ import reducer from './reducer';
 
 
 export default {
+  actionTypes,
   createRouter,
   Provider: FansRouterProvider,
   Link,
