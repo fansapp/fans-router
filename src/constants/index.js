@@ -12,6 +12,6 @@ export const errorMessages = {
   invalidMWRoute: "Route '{route}' not found for middleware.",
   requiredMWparams: "Each middleware needs the 'to' and 'call' attributes.",
   invalidTo: "The 'to' attribute can only be an array or string.",
-  invalidCall: "The 'call' attribute can only be an array or function.",
+  invalidCall: "The 'call' attribute can only be a Promise.",
   invalidFunction: 'The {param} attribute can only be an array or function.',
 };

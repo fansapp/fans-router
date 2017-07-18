@@ -13,5 +13,6 @@ export default {
     END: prefix(NAV, 'END'),
     FAILURE: prefix(NAV, 'FAILURE'),
     START: prefix(NAV, 'START'),
+    COMPLETE: prefix(NAV, 'COMPLETE'),
   },
 };

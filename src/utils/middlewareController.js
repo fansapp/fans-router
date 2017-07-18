@@ -1,5 +1,11 @@
 import { errorMessages } from '../constants';
 
+export const defaultHooks = {
+  shouldNavigate: () => true,
+  onNavigationCancelled: () => { return; },
+  onResolve: (...args) => { args[args.length -1](); },
+  onReject: (...args) => { args[args.length -1](); },
+};
 
 export const validateMiddlewares = (middlewares, routes) => middlewares.map((mw) => {
   const newMw = {};
@@ -22,14 +28,8 @@ export const validateMiddlewares = (middlewares, routes) => middlewares.map((mw)
     throw new Error(errorMessages.invalidTo);
   }
 
-  // validate 'call' data type
-  if ((typeof mw.call) === 'function') {
-    newMw.call = [mw.call];
-  } else if (Array.isArray(mw.call)) {
-    if (mw.call.some(c => (typeof c) !== 'function')) {
-      throw new Error(errorMessages.invalidCall);
-    }
-  } else {
+  // validate 'call'
+  if (!(mw.call instanceof Promise)) {
     throw new Error(errorMessages.invalidCall);
   }
 
