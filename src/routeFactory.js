@@ -31,7 +31,7 @@ const interpretStringRoute = (route, nestedRoutes) => {
     return makeRouteObject(validatedPath.name, route, query && parse(query), validatedPath.params);
   }
   catch ({ message }) {
-    throw new Error(errorMessages.invalidNestedRoute.replace(/{.*?}/g, `'${message}'`));
+    throw new Error(errorMessages.invalidNestedRoute.replace(/{.*?}/g, message));
   }
 };
 
@@ -64,7 +64,7 @@ const interpretRouteObject = (route, routes) => {
       params = validateObjectPathParams(route.params, reqParams);
     }
     catch ({ message }) {
-      throw new Error(errorMessages.paramNotFound.replace(/{.*?}/g, `'${message}'`));
+      throw new Error(errorMessages.paramNotFound.replace(/{.*?}/g, message));
     }
   }
 
