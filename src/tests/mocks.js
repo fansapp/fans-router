@@ -19,7 +19,23 @@ export const nested = [{
         },
       ],
     },
-  ]
+    {
+      name: 'clients',
+      path: 'clients',
+      routes: [
+        {
+          name: 'id',
+          path: '/:clientId',
+          routes: [
+            {
+              name: 'edit',
+              path: '/edit',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }];
 
 export const routes = [
@@ -38,5 +54,17 @@ export const routes = [
   {
     name: 'root.products.all',
     path: '/products/all',
+  },
+  {
+    "name": "root.clients",
+    "path": "/clients",
+  },
+  {
+    "name": "root.clients.id",
+    "path": "/clients/:clientId",
+  },
+  {
+    "name": "root.clients.id.edit",
+    "path": "/clients/:clientId/edit",
   },
 ];

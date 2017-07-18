@@ -6,7 +6,7 @@ const initial = {
 
 export default (state = initial, action) => {
   switch (action.type) {
-    case '@@fans-router/INITIALIZE':
+    case '@@fans-router/INITIALIZE.START':
       return {
         ...state,
         route: action.route,
