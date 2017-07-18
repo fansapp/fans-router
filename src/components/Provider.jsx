@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { navComplete, init } from '../actions';
+import { navigate, navComplete, init } from '../actions';
 import RouteFactory from '../routeFactory';
 
 
@@ -8,23 +8,18 @@ class FansRouterProvider extends Component {
   constructor(props, context) {
     super(props, context);
     const { router } = props;
+    const { dispatch } = context.store;
     this.history = router.history;
     this.routes = router.routes;
     this.history.listen((location, action) => {
       const route = RouteFactory.parse(location.pathname.concat(location.search));
-      context.store.dispatch(navComplete(route, action));
+      dispatch(navComplete(route, action));
     });
 
     const { location } = this.history;
     const route = RouteFactory.parse(location.pathname.concat(location.search));
-    context.store.dispatch(init(route, this.routes));
-  }
-
-  getChildContext() {
-    return {
-      history: this.history,
-      routes: this.routes,
-    };
+    dispatch(init(route, this.routes));
+    dispatch(navigate(route.path));
   }
 
   render() {
@@ -39,11 +34,6 @@ FansRouterProvider.propTypes = {
 
 FansRouterProvider.contextTypes = {
   store: PropTypes.shape().isRequired,
-};
-
-FansRouterProvider.childContextTypes = {
-  history: PropTypes.shape().isRequired,
-  routes: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
 export default FansRouterProvider;
