@@ -1,4 +1,5 @@
 import history from './history';
+import RouteFactory from './routeFactory';
 
 
 export default null;
@@ -6,13 +7,14 @@ export default null;
 
 export const init = (route, routes) => (dispatch) => {
   dispatch({
-    type: '@@fans-router/INITIALIZE',
+    type: '@@fans-router/INITIALIZE.START',
     route,
     routes,
   });
 
   dispatch({
     type: '@@fans-router/INITIALIZE.COMPLETE',
+    route,
   });
 };
 
@@ -21,9 +23,11 @@ export const navigate = path => (dispatch) => {
     return;
   }
 
+  const route = RouteFactory.parse(path);
+
   dispatch({
     type: '@@fans-router/NAVIGATE.START',
-    path,
+    route,
   });
 
   history.push(path);
