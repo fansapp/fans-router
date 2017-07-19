@@ -1,3 +1,5 @@
+import memoize from 'fast-memoize';
+
 import errorMessages from '../constants/errorMessages';
 import actionTypes from '../constants/actionTypes';
 
@@ -13,6 +15,7 @@ export const defaultHooks = {
   onReject: (...args) => { args[args.length -1](); },
 };
 
+export const filterMWs = memoize((mws, routeName) => mws.filter(mw => mw.to.includes(routeName)));
 
 /**
  * Validate each middleware and their attributes

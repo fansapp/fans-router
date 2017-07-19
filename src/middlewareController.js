@@ -1,4 +1,4 @@
-import { validateMiddlewares, applyMWs } from './utils/middlewareController';
+import { validateMiddlewares, applyMWs, filterMWs } from './utils/middlewareController';
 import actionTypes from './constants/actionTypes';
 
 
@@ -38,15 +38,21 @@ class MiddlewareController {
    * @returns {Promise} Resolved when reached the end of the middleware list without cancellation
    */
   execute(route, dispatch, getState) {
-    const middlewares = this.middlewares.filter(mw => mw.to.includes(route.name));
-
     dispatch({
       type: actionTypes.NAVIGATE.START,
       route,
     });
 
     return new Promise((resolve, reject) => {
-      applyMWs(middlewares, route, dispatch, getState, this.history, resolve, reject);
+      applyMWs(
+        filterMWs(this.middlewares, route.name),
+        route,
+        dispatch,
+        getState,
+        this.history,
+        resolve,
+        reject
+      );
     });
   }
 }
