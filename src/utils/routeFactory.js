@@ -57,7 +57,7 @@ export const validateObjectPathParams = (params, requiredParams) => (
 
 
 /**
- * Validates and parses dynamic parameters in a string route
+ * Validates and parses dynamic parameters in a string route (recursive)
  * @param {array} splitUrl The number of nodes remaining to travel
  * @param {object} currentNode The current valid node
  * @param {object} params The dynamic parameters

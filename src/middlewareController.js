@@ -1,4 +1,4 @@
-import { validateMiddlewares, defaultHooks } from './utils/middlewareController';
+import { validateMiddlewares, applyMWs } from './utils/middlewareController';
 import actionTypes from './constants/actionTypes';
 
 
@@ -10,79 +10,44 @@ class MiddlewareController {
     this.middlewares = [];
   }
 
+  /**
+   * Initialization of the middleware controller and validation of the middlewares
+   * @param {array} middlewares The path string or object
+   * @param {array} routes An array of the flat version of the routes (normalized)
+   * @param {object} history The browser history object
+   */
   init(middlewares, routes, history) {
     this.middlewares = validateMiddlewares(middlewares, routes);
     this.routes = routes;
     this.history = history;
   }
 
+  /**
+   * Get the validated middlewares
+   * @returns {object} The validated middlewares
+   */
   getMiddlewares() {
     return this.middlewares;
   }
 
+  /**
+   * Execute each middleware sequentially for the route to be navigated
+   * @param {object} route The route where the app is navigating
+   * @param {function} dispatch The redux dispatch function
+   * @param {function} getState The redux getState function
+   * @returns {Promise} Resolved when reached the end of the middleware list without cancellation
+   */
   execute(route, dispatch, getState) {
     const middlewares = this.middlewares.filter(mw => mw.to.includes(route.name));
 
     dispatch({
-      type: actionTypes.INITIALIZE.START,
+      type: actionTypes.NAVIGATE.START,
       route,
-      routes: this.routes,
     });
 
     return new Promise((resolve, reject) => {
-      this.loopMW(middlewares, route, dispatch, getState, resolve, reject);
+      applyMWs(middlewares, route, dispatch, getState, this.history, resolve, reject);
     });
-  }
-
-  loopMW(middlewares, route, dispatch, getState, resolve, reject) {
-    const mw = middlewares[0];
-    const nextMws = middlewares.slice(1, middlewares.length);
-
-    // finished looping
-    if (middlewares.length === 0) {
-      dispatch({
-        type: actionTypes.NAVIGATE.COMPLETE,
-        route,
-      });
-
-      // change url in browser to the desired path
-      this.history.push(route.path);
-      resolve(route);
-      return;
-    }
-
-    const shouldNavigate = mw.shouldNavigate || defaultHooks.shouldNavigate;
-    if (!shouldNavigate()) {
-      dispatch({
-        type: actionTypes.NAVIGATE.CANCEL,
-        route,
-      });
-
-      const onNavigationCancelled = mw.onNavigationCancelled || defaultHooks.onNavigationCancelled;
-      onNavigationCancelled(route, dispatch, getState());
-      resolve(route);
-      return;
-    }
-
-    let willNext = false;
-    const next = () => {
-      willNext = true;
-    };
-
-    mw.call.then((result) => {
-      const onResolve = mw.onResolve || defaultHooks.onResolve;
-      onResolve(result, route, dispatch, getState(), next);
-      if (willNext) {
-        this.loopMW(nextMws, route, dispatch, getState, resolve, reject);
-      }
-    })
-      .catch((result) => {
-        const onReject = mw.onReject || defaultHooks.onReject;
-        onReject(result, route, dispatch, getState(), next);
-        if (willNext) {
-          this.loopMW(nextMws, route, dispatch, getState, resolve, reject);
-        }
-      });
   }
 }
 

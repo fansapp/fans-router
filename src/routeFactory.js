@@ -1,12 +1,12 @@
 import { parse, stringify } from 'query-string';
-import { errorMessages } from './constants';
+import errorMessages from './constants/errorMessages';
 import {
   makeRouteObject,
   hasUnexpectedQueryType,
   replacePathParamsByValues,
   validateStringPath,
   validateObjectPathParams,
-} from './utils/routerFactory';
+} from './utils/routeFactory';
 
 
 /**

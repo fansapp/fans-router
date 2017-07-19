@@ -2,27 +2,27 @@ import { expect } from 'chai';
 
 import { routes } from './mocks';
 import MiddlewareController from '../middlewareController';
-import { errorMessages }from '../constants';
-
+import errorMessages from '../constants/errorMessages';
+import actionTypes from '../constants/actionTypes';
 
 const history = {
   push: () => { return; },
 };
 
-const promise1 = new Promise((resolve) => {
-  setTimeout(() => resolve('i am promise 1'), 1500);
+const promise1 = () => new Promise((resolve) => {
+  setTimeout(() => resolve('i am promise 1'), 1000);
 });
 
-const promise2 = new Promise((resolve) => {
-  setTimeout(() => resolve('i am promise 2'), 2500);
+const promise2 = () => new Promise((resolve) => {
+  setTimeout(() => resolve('i am promise 2'), 1500);
 });
 
-const promise1fail = new Promise((resolve, reject) => {
-  setTimeout(() => reject('i am promise 1'), 1500);
+const promise1fail = () => new Promise((resolve, reject) => {
+  setTimeout(() => reject('i am promise 1 fail'), 1000);
 });
 
-const promise2fail = new Promise((resolve, reject) => {
-  setTimeout(() => reject('i am promise 2'), 2500);
+const promise2fail = () => new Promise((resolve, reject) => {
+  setTimeout(() => reject('i am promise 2 fail'), 1500);
 });
 
 let dispatched = [];
@@ -44,13 +44,23 @@ const tests = () => {
 
   // handles middleware validation errors
 
+  it('handles unexpected middlewares collection type', () => {
+    expect(() => MiddlewareController.init('asd', routes))
+      .to.throw(errorMessages.invalidMWArray);
+  });
+
+  it('handles unexpected middleware type', () => {
+    expect(() => MiddlewareController.init([12, 53], routes))
+      .to.throw(errorMessages.invalidMWType);
+  });
+
   it('handles missing all required params', () => {
     const mw = [
       {
       },
     ];
     expect(() => MiddlewareController.init(mw, routes))
-      .to.throw(errorMessages.requiredMWparams);
+      .to.throw(errorMessages.requiredMWParams);
   });
 
   it('handles missing "to" param', () => {
@@ -60,7 +70,7 @@ const tests = () => {
       },
     ];
     expect(() => MiddlewareController.init(mw, routes))
-      .to.throw(errorMessages.requiredMWparams);
+      .to.throw(errorMessages.requiredMWParams);
   });
 
   it('handles missing "call" param', () => {
@@ -70,7 +80,7 @@ const tests = () => {
       },
     ];
     expect(() => MiddlewareController.init(mw, routes))
-      .to.throw(errorMessages.requiredMWparams);
+      .to.throw(errorMessages.requiredMWParams);
   });
 
   it('handles unexpected "to" type', () => {
@@ -237,7 +247,7 @@ const tests = () => {
 
   // execute
 
-  it('executes a single middleware', () => {
+  it('executes a single middleware', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -253,16 +263,17 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
+        actionTypes.NAVIGATE.START,
         'PROMISE1',
-        '@@fans-router/NAVIGATE.COMPLETE',
+        actionTypes.NAVIGATE.END,
       ]);
-    });
+      done();
+    }).catch(() => { done(); });
   });
 
-  it('executes chained middlewares', () => {
+  it('executes chained middlewares', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -286,17 +297,18 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
+        actionTypes.NAVIGATE.START,
         'PROMISE1',
         'PROMISE2',
-        '@@fans-router/NAVIGATE.COMPLETE',
+        actionTypes.NAVIGATE.END,
       ]);
-    });
+      done();
+    }).catch(() => { done(); });
   });
 
-  it('executes and rejects single middleware', () => {
+  it('executes and rejects single middleware', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -312,16 +324,17 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
+        actionTypes.NAVIGATE.START,
         'PROMISE1 FAIL',
-        '@@fans-router/NAVIGATE.COMPLETE',
+        actionTypes.NAVIGATE.END,
       ]);
-    });
+      done();
+    }).catch(() => { done(); });
   });
 
-  it('executes and rejects chained middlewares', () => {
+  it('executes and rejects chained middlewares', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -345,17 +358,18 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
+        actionTypes.NAVIGATE.START,
         'PROMISE1 FAIL',
         'PROMISE2 FAIL',
-        '@@fans-router/NAVIGATE.COMPLETE',
+        actionTypes.NAVIGATE.END,
       ]);
-    });
+      done();
+    }).catch(() => { done(); });
   });
 
-  it('cancels a single middleware', () => {
+  it('cancels a single middleware', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -373,16 +387,17 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
-        '@@fans-router/NAVIGATE.CANCEL',
+        actionTypes.NAVIGATE.START,
+        actionTypes.NAVIGATE.CANCEL,
         'CANCELLED',
       ]);
-    });
+      done();
+    }).catch(() => { done(); });
   });
 
-  it('cancels a single middleware', () => {
+  it('cancels a single middleware', (done) => {
     const mw = [
       {
         to: ['root.about'],
@@ -408,13 +423,54 @@ const tests = () => {
       },
     ];
     MiddlewareController.init(mw, routes, history);
-    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
       expect(dispatched).to.eql([
-        '@@fans-router/NAVIGATE.START',
+        actionTypes.NAVIGATE.START,
         'PROMISE1',
-        '@@fans-router/NAVIGATE.CANCEL',
+        actionTypes.NAVIGATE.CANCEL,
         'CANCELLED',
       ]);
+      done();
+    }).catch(() => { done(); });
+  });
+
+  it('handles onResolve callback without next', (done) => {
+    const mw = [
+      {
+        to: ['root.about'],
+        call: promise1,
+        onResolve: (result, route, dispatch) => {
+          dispatch('PROMISE1');
+          // next();
+        },
+      },
+    ];
+    MiddlewareController.init(mw, routes, history);
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+      done();
+    }).catch((e) => {
+      expect(e).to.eql(errorMessages.noNext);
+      done();
+    });
+  });
+
+  it('handles onReject callback without next', (done) => {
+    const mw = [
+      {
+        to: ['root.about'],
+        call: promise1fail,
+        onReject: (result, route, dispatch) => {
+          dispatch('PROMISE1 FAIL');
+          // next();
+        },
+      },
+    ];
+    MiddlewareController.init(mw, routes, history);
+    MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+      done();
+    }).catch((e) => {
+      expect(e).to.eql(errorMessages.noNext);
+      done();
     });
   });
 };

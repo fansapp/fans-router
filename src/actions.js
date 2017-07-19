@@ -36,7 +36,7 @@ export const navigate = path => (dispatch, getState) => {
     RouteFactory.parse(path),
     dispatch,
     getState
-  ).then(() => { return; }).catch(() => { return; });
+  ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
 
