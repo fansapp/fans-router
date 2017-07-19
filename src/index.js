@@ -5,6 +5,7 @@ import Link from './components/LinkContainer';
 import { navigate } from './actions';
 import normalizeRoutes from './utils/normalizeRoutes';
 import reducer from './reducer';
+import selectors from './selectors';
 
 
 export default {
@@ -14,5 +15,6 @@ export default {
   Link,
   navigate,
   normalizeRoutes,
+  selectors,
   reducer,
 };

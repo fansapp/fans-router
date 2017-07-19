@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
 import LinkComponent from './Link';
 import { navigate } from '../actions';
+import { getRoutes, getRoute } from '../actions';
 
 
 const mapState = state => ({
-  route: state.router.route,
-  routes: state.router.routes,
+  route: getRoute(state),
+  routes: getRoutes(state),
 });
 
 const mapActions = dispatch => ({
