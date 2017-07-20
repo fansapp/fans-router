@@ -11,10 +11,10 @@ import selectors from './selectors';
 export default {
   actionTypes,
   createRouter,
-  Provider: FansRouterProvider,
   Link,
   navigate,
   normalizeRoutes,
-  selectors,
+  Provider: FansRouterProvider,
   reducer,
+  ...selectors,
 };
