@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { navComplete, init } from '../actions';
+import { /*navComplete,*/ init } from '../actions';
 import RouteFactory from '../routeFactory';
 
 
@@ -10,11 +10,11 @@ class FansRouterProvider extends Component {
     const { router } = props;
     this.history = router.history;
     this.routes = router.routes;
-    this.history.listen((location, action) => {
-      const route = RouteFactory.parse(location.pathname.concat(location.search));
-      context.store.dispatch(navComplete(route, action));
-    });
-
+    /* this.history.listen((location, action) => {
+     *   const route = RouteFactory.parse(location.pathname.concat(location.search));
+     *   context.store.dispatch(navComplete(route, action));
+     * });
+     */
     const { location } = this.history;
     const route = RouteFactory.parse(location.pathname.concat(location.search));
     context.store.dispatch(init(route, this.routes));

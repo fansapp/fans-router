@@ -1,6 +1,7 @@
 import history from './history';
 import RouteFactory from './routeFactory';
 import actionTypes from './constants/actionTypes';
+import MiddlewareController from './middlewareController';
 
 
 export default null;
@@ -12,14 +13,13 @@ export const init = (route, routes) => (dispatch) => {
     route,
     routes,
   });
-
   dispatch({
     type: actionTypes.INITIALIZE.END,
     route,
   });
 };
 
-export const navigate = path => (dispatch) => {
+export const navigate = path => (dispatch, getState) => {
   if (path === history.location.pathname) {
     return;
   }
@@ -31,7 +31,11 @@ export const navigate = path => (dispatch) => {
     route,
   });
 
-  history.push(path);
+  MiddlewareController.execute(
+    RouteFactory.parse(path),
+    dispatch,
+    getState
+  ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
 
