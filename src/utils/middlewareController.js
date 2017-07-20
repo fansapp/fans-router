@@ -128,7 +128,7 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
 
   // if or not we should navigate to this route based on a middleware condition
   const shouldNavigate = mw.shouldNavigate || defaultHooks.shouldNavigate;
-  if (!shouldNavigate()) {
+  if (!shouldNavigate(route, getState())) {
     dispatch({
       type: actionTypes.NAVIGATE.CANCEL,
       route,
@@ -147,7 +147,7 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
   };
 
   // the desired call te be made before the navigation for this middleware
-  mw.call().then((result) => {
+  mw.call(route, getState()).then((result) => {
     const onResolve = mw.onResolve || defaultHooks.onResolve;
     onResolve(result, route, dispatch, getState(), next);
     if (willNext) {

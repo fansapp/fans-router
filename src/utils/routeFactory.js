@@ -1,15 +1,17 @@
+import memoize from 'fast-memoize';
+
 /**
  * Builds the structure of the route object
  * @param {string} name The name of the route
  * @param {object} query The url query
  * @returns {object} The route object
  */
-export const makeRouteObject = (name, path, query = {}, params = {}) => ({
+export const makeRouteObject = memoize((name, path, query = {}, params = {}) => ({
   name,
   path,
   params,
   query,
-});
+}));
 
 
 /**
@@ -17,10 +19,10 @@ export const makeRouteObject = (name, path, query = {}, params = {}) => ({
  * @param {object} name The queries
  * @returns {boolean} True if has errors
  */
-export const hasUnexpectedQueryType = (query) => (
+export const hasUnexpectedQueryType = memoize((query) => (
   Object.keys(query)
     .some(r => query[r] && ['object', 'function'].includes(typeof query[r]))
-);
+));
 
 
 /**
@@ -31,11 +33,11 @@ export const hasUnexpectedQueryType = (query) => (
  * @param {object} requiredParams The needed parameters in the path
  * @returns {string} The replaced path
  */
-export const replacePathParamsByValues = (path, params, requiredParams) => (
+export const replacePathParamsByValues = memoize((path, params, requiredParams) => (
   requiredParams.reduce((builtPath, curReqParam) => (
     builtPath.replace(curReqParam, params[curReqParam.slice(1, curReqParam.length)])
   ), path)
-);
+));
 
 
 /**
@@ -44,7 +46,7 @@ export const replacePathParamsByValues = (path, params, requiredParams) => (
  * @param {object} requiredParams The needed parameters in the path
  * @returns {object} The validated parameters
  */
-export const validateObjectPathParams = (params, requiredParams) => (
+export const validateObjectPathParams = memoize((params, requiredParams) => (
   requiredParams.map(p => p.slice(1, p.length))
     .reduce((parameters, currentParam) => {
       if (!params.hasOwnProperty(currentParam)) {
@@ -53,21 +55,21 @@ export const validateObjectPathParams = (params, requiredParams) => (
 
       return { ...parameters, [currentParam]: String(params[currentParam]) };
     }, {})
-);
+));
 
 
 /**
  * Validates and parses dynamic parameters in a string route (recursive)
- * @param {array} splitUrl The number of nodes remaining to travel
+ * @param {array} nodes The number of nodes remaining to travel
  * @param {object} currentNode The current valid node
  * @param {object} params The dynamic parameters
  * @param {string} name The name of the current traveled path
  * @returns {object} The name of the path and the dynamic parameters
  */
-export const validateStringPath = (splitUrl = [], currentNode, params = {}, name = 'root') => {
+export const validateStringPath = memoize((nodes = [], currentNode, params = {}, name = 'root') => {
   const newParams = params;
 
-  if (splitUrl.length === 0) {
+  if (nodes.length === 0) {
     return {
       params,
       name,
@@ -78,14 +80,14 @@ export const validateStringPath = (splitUrl = [], currentNode, params = {}, name
     const path = r.path.replace(/^\/|\/$/g, '');
 
     if (path.startsWith(':')) {
-      if (!splitUrl[0]) {
-        throw new Error(splitUrl[0]);
+      if (!nodes[0]) {
+        throw new Error(nodes[0]);
       }
-      newParams[path.slice(1, path.length)] = splitUrl[0];
+      newParams[path.slice(1, path.length)] = nodes[0];
       return r;
     }
 
-    if (path === splitUrl[0]) {
+    if (path === nodes[0]) {
       return r;
     }
 
@@ -93,13 +95,13 @@ export const validateStringPath = (splitUrl = [], currentNode, params = {}, name
   });
 
   if (!nextNode) {
-    throw new Error(splitUrl[0]);
+    throw new Error(nodes[0]);
   }
 
   return validateStringPath(
-    splitUrl.slice(1, splitUrl.length),
+    nodes.slice(1, nodes.length),
     nextNode,
     newParams,
     name.concat(`.${nextNode.name}`)
   );
-};
+});
