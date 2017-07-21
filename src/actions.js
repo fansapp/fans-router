@@ -38,7 +38,6 @@ export const navigate = path => (dispatch, getState) => {
   ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
-
 export const navComplete = (route, action) => ({
   type: actionTypes.NAVIGATE.END,
   route,
