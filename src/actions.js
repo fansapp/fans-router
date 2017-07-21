@@ -31,13 +31,6 @@ export const navigate = path => (dispatch, getState) => {
     return;
   }
 
-  const route = RouteFactory.parse(path);
-
-  dispatch({
-    type: actionTypes.NAVIGATE.START,
-    route,
-  });
-
   MiddlewareController.execute(
     RouteFactory.parse(path),
     dispatch,
