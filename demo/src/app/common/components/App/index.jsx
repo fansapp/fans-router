@@ -9,6 +9,7 @@ import Post from '../../../posts/containers/Post';
 import Welcome from '../Welcome';
 import TopBar from '../../components/TopBar';
 import SideBar from '../SideBar';
+import Login from '../../../login/components/Login';
 
 
 const renderView = (route) => {
@@ -19,6 +20,8 @@ const renderView = (route) => {
       return <Posts />;
     case 'root.posts.details':
       return <Post id={route.params.postId} />;
+    case 'root.login':
+      return <Login />;
     default:
       return null;
   }
