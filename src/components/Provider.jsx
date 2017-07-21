@@ -9,17 +9,24 @@ class FansRouterProvider extends Component {
   constructor(props, context) {
     super(props, context);
     const { router, middlewares } = props;
-    this.history = router.history;
-    this.routes = router.routes;
+    const {routes, nestedRoutes, history } = router;
+
+    this.history = history;
+    this.routes = routes;
+    this.nestedRoutes = nestedRoutes;
+    this.middlewares = middlewares;
+
     /* this.history.listen((location, action) => {
      *   const route = RouteFactory.parse(location.pathname.concat(location.search));
      *   context.store.dispatch(navComplete(route, action));
      * });
      */
-    MiddlewareController.init(middlewares, this.routes, this.history);
+
+    RouteFactory.init(this.routes, this.nestedRoutes);
+    MiddlewareController.init(this.middlewares, this.routes, this.history);
+
     const { location } = this.history;
     const route = RouteFactory.parse(location.pathname.concat(location.search));
-
     context.store.dispatch(init(route, this.routes));
   }
 
