@@ -9,7 +9,7 @@ class FansRouterProvider extends Component {
   constructor(props, context) {
     super(props, context);
     const { router, middlewares } = props;
-    const {routes, nestedRoutes, history } = router;
+    const { routes, nestedRoutes, history } = router;
 
     this.history = history;
     this.routes = routes;

@@ -7,16 +7,23 @@ import MiddlewareController from './middlewareController';
 export default null;
 
 
-export const init = (route, routes) => (dispatch) => {
+export const init = (route, routes) => (dispatch, getState) => {
   dispatch({
     type: actionTypes.INITIALIZE.START,
     route,
     routes,
   });
+
   dispatch({
     type: actionTypes.INITIALIZE.END,
     route,
   });
+
+  MiddlewareController.execute(
+    route,
+    dispatch,
+    getState
+  ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
 export const navigate = path => (dispatch, getState) => {
