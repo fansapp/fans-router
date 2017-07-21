@@ -1,8 +1,12 @@
+import { updatePosts } from '../../posts/rest';
+
+
 export default [
   {
-    to: ['root.posts'],
-    call: () => new Promise(resolve => setTimeout(() => resolve(), 1000)),
-    onResolve: (result, route, dispatch, state, next) => {
+    to: ['root.posts', 'root.posts.details'],
+    call: updatePosts,
+    onResolve: (posts, route, dispatch, state, next) => {
+      dispatch({ type: 'POSTS.UPDATE', posts });
       next();
     },
   },
