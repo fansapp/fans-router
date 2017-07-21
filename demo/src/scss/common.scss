@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:300,500');
+
+body,
+html {
+  min-height: 100vh;
+  width: 100%;
+}
+
+#app {
+  min-height: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input,
+select {
+  border: 0;
+  font-family: $poppins;
+  font-weight: 300;
+}
+
+input {
+  padding: 0;
+}
+
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  list-style-position: inside;
+  list-style-type: none;
+}
+
+input[type=checkbox] {
+  cursor: pointer;
+  transform: scale(1.3);
+  // Fix for Safari to make it larger.
+  width: 18px;
+}
