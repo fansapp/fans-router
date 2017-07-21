@@ -1,0 +1,12 @@
+node_modules/
+coverage/
+.sass-cache/
+.idea/
+.tmp/
+target/
+test/
+.elasticbeanstalk/
+.git/
+
+.env
+.env-*

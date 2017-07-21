@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>FANS Router Example</title>
+
+    {{!-- The styles aren't present in a dev env, they are in the JS bundle to allow CSS/SCSS HMR --}}
+    {{#if isMinimize}}
+      <link rel="stylesheet" type="text/css" href="/public/css/main.css{{ hash }}" />
+    {{/if}}
+
+    <link rel="icon" type="image/png" href="https://s3.amazonaws.com/onboarding-web-app/dev/favicon.png" sizes="32x32" />
+  </head>
+  <body>
+    <div id="app"></div>
+
+    {{!-- {{#if state}}
+      <script>
+       window.__PRELOADED_STATE__ = '{{{ escapeSingleQuotes state }}}';
+      </script>
+    {{/if}} --}}
+
+    <script src="/public/js/manifest.js{{ hash }}"></script>
+    <script src="/public/js/vendor.js{{ hash }}"></script>
+    <script src="/public/js/main.js{{ hash }}"></script>
+
+  </body>
+</html>

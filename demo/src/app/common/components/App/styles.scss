@@ -1,0 +1,17 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: inherit;
+}
+
+.Main {
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+  background: white;
+}
+
+.View {
+  width: 100%;
+  padding: 30px;
+}

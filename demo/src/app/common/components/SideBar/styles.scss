@@ -1,0 +1,41 @@
+.SideBar {
+  width: 300px;
+  background: #035ea5;
+  flex-shrink: 0;
+  padding: 20px;
+
+  &__logo {
+    padding: 15px 0;
+    margin-right: 40px;
+    font-size: 22px;
+    color: #5fbbe0;
+  }
+
+  &__navigation {
+    margin-top: 40px;
+  }
+
+  &__link {
+    display: block;
+    padding: 15px 0 7px;
+    margin-top: 10px;
+    color: white;
+    border-bottom: 4px solid darken(#035ea5, 20%);
+    text-decoration: none;
+
+    a {
+      display: block;
+      text-decoration: none;
+      color: white;
+
+      &:hover {
+        background: lighten(#035ea5, 10%);
+      }
+    }
+
+  }
+
+  &__link-text {
+    margin: auto;
+  }
+}
