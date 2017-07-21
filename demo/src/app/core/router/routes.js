@@ -17,6 +17,10 @@ export default [
         name: 'login',
         path: '/login',
       },
+      {
+        name: 'secret',
+        path: '/secret',
+      },
     ],
   },
 ];

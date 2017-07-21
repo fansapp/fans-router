@@ -1,4 +1,4 @@
-import memoize from 'fast-memoize';
+import memoize from 'lru-memoize';
 
 /**
  * Builds the structure of the route object
@@ -6,7 +6,8 @@ import memoize from 'fast-memoize';
  * @param {object} query The url query
  * @returns {object} The route object
  */
-export const makeRouteObject = memoize((name, path, query = {}, params = {}) => ({
+export const makeRouteObject = memoize(100, null, true)(
+  (name, path, query = {}, params = {}) => ({
   name,
   path,
   params,
@@ -19,7 +20,8 @@ export const makeRouteObject = memoize((name, path, query = {}, params = {}) => 
  * @param {object} name The queries
  * @returns {boolean} True if has errors
  */
-export const hasUnexpectedQueryType = memoize((query) => (
+export const hasUnexpectedQueryType = memoize(100, null, true)(
+  (query) => (
   Object.keys(query)
     .some(r => query[r] && ['object', 'function'].includes(typeof query[r]))
 ));
@@ -33,7 +35,8 @@ export const hasUnexpectedQueryType = memoize((query) => (
  * @param {object} requiredParams The needed parameters in the path
  * @returns {string} The replaced path
  */
-export const replacePathParamsByValues = memoize((path, params, requiredParams) => (
+export const replacePathParamsByValues = memoize(100, null, true)(
+  (path, params, requiredParams) => (
   requiredParams.reduce((builtPath, curReqParam) => (
     builtPath.replace(curReqParam, params[curReqParam.slice(1, curReqParam.length)])
   ), path)
@@ -46,7 +49,8 @@ export const replacePathParamsByValues = memoize((path, params, requiredParams) 
  * @param {object} requiredParams The needed parameters in the path
  * @returns {object} The validated parameters
  */
-export const validateObjectPathParams = memoize((params, requiredParams) => (
+export const validateObjectPathParams = memoize(100, null, true)(
+  (params, requiredParams) => (
   requiredParams.map(p => p.slice(1, p.length))
     .reduce((parameters, currentParam) => {
       if (!params.hasOwnProperty(currentParam)) {
@@ -66,7 +70,8 @@ export const validateObjectPathParams = memoize((params, requiredParams) => (
  * @param {string} name The name of the current traveled path
  * @returns {object} The name of the path and the dynamic parameters
  */
-export const validateStringPath = memoize((nodes = [], currentNode, params = {}, name = 'root') => {
+export const validateStringPath = memoize(100, null, true)(
+  (nodes = [], currentNode, params = {}, name = 'root') => {
   const newParams = params;
 
   if (nodes.length === 0) {

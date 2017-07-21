@@ -1,4 +1,4 @@
-import memoize from 'fast-memoize';
+import memoize from 'lru-memoize';
 
 import errorMessages from '../constants/errorMessages';
 import actionTypes from '../constants/actionTypes';
@@ -9,13 +9,15 @@ import actionTypes from '../constants/actionTypes';
  * @returns {object} The default hooks
  */
 export const defaultHooks = {
+  call: () => new Promise(resolve => resolve()),
   shouldNavigate: () => true,
   onNavigationCancelled: () => { return; },
   onResolve: (...args) => { args[args.length -1](); },
   onReject: (...args) => { args[args.length -1](); },
 };
 
-export const filterMWs = memoize((mws, routeName) => mws.filter(mw => mw.to.includes(routeName)));
+export const filterMWs = memoize(100, null, true)(
+  (mws, routeName) => mws.filter(mw => mw.to.includes(routeName)));
 
 /**
  * Validate each middleware and their attributes
@@ -35,12 +37,11 @@ export const validateMiddlewares = (middlewares, routes) => {
 
     const newMw = {};
 
-    if (!mw.hasOwnProperty('to') || !mw.hasOwnProperty('call')) {
+    if (!mw.hasOwnProperty('to')) {
       throw new Error(errorMessages.requiredMWParams);
     }
 
     newMw.to = mw.to;
-    newMw.call = mw.call;
 
     // validate 'to' data type
     if ((typeof mw.to) === 'string') {
@@ -53,10 +54,6 @@ export const validateMiddlewares = (middlewares, routes) => {
       throw new Error(errorMessages.invalidTo);
     }
 
-    if ((typeof mw.call) !== 'function') {
-      throw new Error(errorMessages.invalidCall);
-    }
-
     // validate if 'to' targets an existing route
     const routeNames = routes.map( r => r.name);
     newMw.to.forEach(t => {
@@ -64,6 +61,13 @@ export const validateMiddlewares = (middlewares, routes) => {
         throw new Error(errorMessages.invalidMWRoute.replace(/{.*?}/g, t));
       }
     });
+
+    // validate 'call'
+    if (!['function', 'undefined'].includes(typeof mw.call)) {
+      throw new Error(errorMessages.invalidCall);
+    } else if ((typeof mw.call) === 'function') {
+      newMw.call = mw.call;
+    }
 
     // validate 'onResolve'
     if (!['function', 'undefined'].includes(typeof mw.onResolve)) {
@@ -147,7 +151,8 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
   };
 
   // the desired call te be made before the navigation for this middleware
-  mw.call(route, getState()).then((result) => {
+  const call = mw.call || defaultHooks.call;
+  call(route, getState()).then((result) => {
     const onResolve = mw.onResolve || defaultHooks.onResolve;
     onResolve(result, route, dispatch, getState(), next);
     if (willNext) {

@@ -9,7 +9,8 @@ import Post from '../../../posts/containers/Post';
 import Welcome from '../Welcome';
 import TopBar from '../../components/TopBar';
 import SideBar from '../SideBar';
-import Login from '../../../login/components/Login';
+import Login from '../../../login/containers/Login';
+import Secret from '../../../secret/components/Secret';
 
 
 const renderView = (route) => {
@@ -22,6 +23,8 @@ const renderView = (route) => {
       return <Post id={route.params.postId} />;
     case 'root.login':
       return <Login />;
+    case 'root.secret':
+      return <Secret />;
     default:
       return null;
   }
