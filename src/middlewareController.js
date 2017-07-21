@@ -35,9 +35,10 @@ class MiddlewareController {
    * @param {object} route The route where the app is navigating
    * @param {function} dispatch The redux dispatch function
    * @param {function} getState The redux getState function
+   * @param {boolean} isPop If this navigation started from browser history's pop (back button)
    * @returns {Promise} Resolved when reached the end of the middleware list without cancellation
    */
-  execute(route, dispatch, getState) {
+  execute(route, dispatch, getState, isPop = false) {
     dispatch({
       type: actionTypes.NAVIGATE.START,
       route,
@@ -49,7 +50,7 @@ class MiddlewareController {
         route,
         dispatch,
         getState,
-        this.history,
+        !isPop ? this.history.push : this.history.replace,
         resolve,
         reject
       );

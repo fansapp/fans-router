@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { /*navComplete,*/ init } from '../actions';
+import { navigate, init } from '../actions';
 import RouteFactory from '../routeFactory';
+import actionTypes from '../constants/actionTypes';
 import MiddlewareController from '../middlewareController';
 
 
@@ -16,11 +17,11 @@ class FansRouterProvider extends Component {
     this.nestedRoutes = nestedRoutes;
     this.middlewares = middlewares;
 
-    /* this.history.listen((location, action) => {
-     *   const route = RouteFactory.parse(location.pathname.concat(location.search));
-     *   context.store.dispatch(navComplete(route, action));
-     * });
-     */
+     this.history.listen((location, action) => {
+       if (action === actionTypes.HISTORY.POP) {
+         context.store.dispatch(navigate(location.pathname.concat(location.search), action));
+       }
+      });
 
     RouteFactory.init(this.routes, this.nestedRoutes);
     MiddlewareController.init(this.middlewares, this.routes, this.history);

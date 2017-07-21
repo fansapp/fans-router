@@ -109,11 +109,11 @@ export const validateMiddlewares = (middlewares, routes) => {
  * @param {object} route The route where the app is navigating
  * @param {function} dispatch The redux dispatch function
  * @param {function} getState The redux getState function
- * @param {object} history The browser history object
+ * @param {function} historyFunc Update browser history by calling this function
  * @param {function} resolve The resolution callback of the main Promise
  * @param {function} reject The rejection callback of the main Promise
  */
-export const applyMWs = (middlewares, route, dispatch, getState, history, resolve, reject) => {
+export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, resolve, reject) => {
   const mw = middlewares[0];
   const nextMws = middlewares.slice(1, middlewares.length);
 
@@ -125,7 +125,7 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
     });
 
     // change url in browser to the desired path
-    history.push(route.path);
+    historyFunc(route.path);
     resolve(route);
     return;
   }
@@ -156,7 +156,7 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
     const onResolve = mw.onResolve || defaultHooks.onResolve;
     onResolve(result, route, dispatch, getState(), next);
     if (willNext) {
-      applyMWs(nextMws, route, dispatch, getState, history, resolve, reject);
+      applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
     }
     else {
       reject(errorMessages.noNext);
@@ -167,7 +167,7 @@ export const applyMWs = (middlewares, route, dispatch, getState, history, resolv
       const onReject = mw.onReject || defaultHooks.onReject;
       onReject(result, route, dispatch, getState(), next);
       if (willNext) {
-        applyMWs(nextMws, route, dispatch, getState, history, resolve, reject);
+        applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
       }
       else {
         reject(errorMessages.noNext);
