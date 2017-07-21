@@ -26,17 +26,20 @@ export const init = (route, routes) => (dispatch, getState) => {
   ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
-export const navigate = path => (dispatch, getState) => {
-  if (path === history.location.pathname) {
-    return;
-  }
+export const navigate = (path, historyAction = actionTypes.HISTORY.PUSH) =>
+  (dispatch, getState) => {
+    const isPop = historyAction === actionTypes.HISTORY.POP;
+    if (!isPop && path === history.location.pathname) {
+      return;
+    }
 
-  MiddlewareController.execute(
-    RouteFactory.parse(path),
-    dispatch,
-    getState
-  ).then(() => { return; }).catch((e) => { throw new Error(e); });
-};
+    MiddlewareController.execute(
+      RouteFactory.parse(path),
+      dispatch,
+      getState,
+      isPop
+    ).then(() => { return; }).catch((e) => { throw new Error(e); });
+  };
 
 export const navComplete = (route, action) => ({
   type: actionTypes.NAVIGATE.END,

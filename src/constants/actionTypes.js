@@ -14,4 +14,8 @@ export default {
     FAILURE: prefix(NAV, 'FAILURE'),
     START: prefix(NAV, 'START'),
   },
+  HISTORY: {
+    POP: 'POP',
+    PUSH: 'PUSH',
+  },
 };
