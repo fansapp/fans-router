@@ -1,4 +1,5 @@
 import { updatePosts } from '../../posts/rest';
+import { navigate } from '../../../../../dist';
 
 
 export default [
@@ -9,5 +10,10 @@ export default [
       dispatch({ type: 'POSTS.UPDATE', posts });
       next();
     },
+  },
+  {
+    to: ['root.secret'],
+    shouldNavigate: (route, state) => state.app.token,
+    onNavigationCancelled: (route, dispatch) => dispatch(navigate('/login')),
   },
 ];

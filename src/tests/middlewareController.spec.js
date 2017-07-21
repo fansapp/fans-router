@@ -75,16 +75,6 @@ const tests = () => {
 
   });
 
-  it('handles missing "call" param', () => {
-    const mw = [
-      {
-        to: 'root.about',
-      },
-    ];
-    expect(() => MiddlewareController.init(mw, routes))
-      .to.throw(errorMessages.requiredMWParams);
-  });
-
   it('handles unexpected "to" type', () => {
     const mw = [
       {
