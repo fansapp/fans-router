@@ -109,7 +109,7 @@ Type: `string`
 The path associated to this route.
 When nesting routes, names will be joined with slashes.
 
-Dynamic url parameters are also supported, using the same notation as Express; you can supply your parameter by prefixing with a colon.
+Dynamic url parameters are also supported, simply supply your parameter by prefixing with a colon (like Express).
 
 Example: `/posts/:postId` will populate the `params` attribute of the route object with `{ postId: 'value' }`
 
@@ -121,7 +121,9 @@ Optional. Contains all the routes to nest in the current route's scope.
 
 ## Route object
 
-An object representing a route, that can be found in the store, has the following structure:
+An object representing a route, which can that can be found in the store.
+
+Route objects have the following structure:
 
 #### `name`
 
