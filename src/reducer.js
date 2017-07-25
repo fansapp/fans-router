@@ -4,6 +4,7 @@ import actionTypes from './constants/actionTypes';
 const initial = {
   route: null,
   routes: [],
+  isNavigating: false,
 };
 
 export default (state = initial, action) => {
@@ -15,10 +16,24 @@ export default (state = initial, action) => {
         routes: action.routes,
       };
 
+    case actionTypes.NAVIGATE.START:
+      return {
+        ...state,
+        isNavigating: true,
+      };
+
     case actionTypes.NAVIGATE.END:
       return {
         ...state,
         route: action.route,
+        isNavigating: false,
+      };
+
+    case actionTypes.NAVIGATE.FAILURE:
+    case actionTypes.NAVIGATE.CANCEL:
+      return {
+        ...state,
+        isNavigating: false,
       };
 
     default: return state;
