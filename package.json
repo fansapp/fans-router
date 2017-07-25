@@ -55,9 +55,11 @@
     "webpack": "^3.0.0",
     "webpack-node-externals": "^1.6.0"
   },
+  "peerDependencies": {
+    "history": "^4.6.3"
+  },
   "dependencies": {
     "lru-memoize": "^1.0.2",
-    "query-string": "^4.3.4",
-    "history": "^4.6.3"
+    "query-string": "^4.3.4"
   }
 }
