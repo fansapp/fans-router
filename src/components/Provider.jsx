@@ -43,10 +43,14 @@ class FansRouterProvider extends Component {
   }
 }
 
+FansRouterProvider.defaultProps = {
+  middlewares: [],
+};
+
 FansRouterProvider.propTypes = {
   children: PropTypes.element.isRequired,
   router: PropTypes.shape().isRequired,
-  middlewares: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+  middlewares: PropTypes.arrayOf(PropTypes.shape()),
 };
 
 FansRouterProvider.contextTypes = {

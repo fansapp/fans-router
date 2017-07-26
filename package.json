@@ -11,9 +11,9 @@
     "dev": "webpack --watch",
     "lint": "eslint ./src --ext .js,.jsx",
     "prepublish": "npm run build",
-    "test": "NODE_ENV=test mocha --opts mocha.opts || true",
+    "test": "NODE_ENV=test mocha --require src/tests/setup.js --opts mocha.opts || true",
     "travis:install": "npm install isomorphic-fetch history",
-    "travis:run": "NODE_ENV=test; mocha --opts mocha.travis.opts; npm run lint"
+    "travis:run": "NODE_ENV=test; mocha --require src/tests/setup.js --opts mocha.travis.opts; npm run lint"
   },
   "repository": {
     "type": "git",
@@ -59,6 +59,7 @@
     "history": "^4.6.3"
   },
   "dependencies": {
+    "jsdom": "^11.1.0",
     "lru-memoize": "^1.0.2",
     "query-string": "^4.3.4"
   }
