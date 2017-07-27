@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import sinon from 'sinon';
 
-// import RouteFactory from '../routeFactory';
 import Link from '../components/Link';
+
 
 describe('<Link />', () => {
   const baseRoute = { path: '', name: '', params: {}, query: {} };
