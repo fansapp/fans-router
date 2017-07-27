@@ -7,7 +7,7 @@ import errorMessages from '../constants/errorMessages';
 
 const tests = () => {
 
-  beforeEach(function() {
+  beforeEach(() => {
     RouteFactory.init(routes, nested);
   });
 
