@@ -19,7 +19,7 @@ describe('<Provider />', () => {
         search: '',
       },
     },
-    routes: { test: 42 },
+    routes: [ { name: 'root.test', path: '/test' } ],
     nestedRoutes: { nested: true },
   };
 
