@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RouteFactory from '../routeFactory';
 
 
-const Link = ({ baseClass, children, className, to, navigate, routeName }) => {
+const Link = ({ baseClass, children, className, to, navigate, route }) => {
   const handleClick = (e) => {
     e.preventDefault();
     navigate(to);
   };
 
-  const { name } = RouteFactory.parse(to);
   let classes = baseClass;
-  if (name === routeName) {
+  if (to === route.path) {
     classes = classes.concat(` ${baseClass}--active`);
   }
 
@@ -33,7 +31,12 @@ Link.propTypes = {
   className: PropTypes.string,
   to: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
-  routeName: PropTypes.string.isRequired,
+  route: PropTypes.shape({
+    query: PropTypes.shape().isRequired,
+    name: PropTypes.string.isRequired,
+    params: PropTypes.shape().isRequired,
+    path: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default Link;
