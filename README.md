@@ -1,6 +1,6 @@
 ![](https://travis-ci.org/fansapp/fans-router.svg?branch=master)
 
-# fans-rest
+# fans-router
 
 An opinionated react-redux router library.
 
