@@ -1,41 +1,48 @@
 import history from './history';
 import RouteFactory from './routeFactory';
+import actionTypes from './constants/actionTypes';
+import MiddlewareController from './middlewareController';
 
 
 export default null;
 
 
-export const init = (route, routes) => (dispatch) => {
+export const init = (route, routes) => (dispatch, getState) => {
   dispatch({
-    type: '@@fans-router/INITIALIZE.START',
+    type: actionTypes.INITIALIZE.START,
     route,
     routes,
   });
 
   dispatch({
-    type: '@@fans-router/INITIALIZE.COMPLETE',
-    route,
-  });
-};
-
-export const navigate = path => (dispatch) => {
-  if (path === history.location.pathname) {
-    return;
-  }
-
-  const route = RouteFactory.parse(path);
-
-  dispatch({
-    type: '@@fans-router/NAVIGATE.START',
+    type: actionTypes.INITIALIZE.END,
     route,
   });
 
-  history.push(path);
+  MiddlewareController.execute(
+    route,
+    dispatch,
+    getState
+  ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
+export const navigate = (path, historyAction = actionTypes.HISTORY.PUSH) =>
+  (dispatch, getState) => {
+    const isPop = historyAction === actionTypes.HISTORY.POP;
+    if (getState().router.isNavigating || (!isPop && path === history.location.pathname)) {
+      return;
+    }
+
+    MiddlewareController.execute(
+      RouteFactory.parse(path),
+      dispatch,
+      getState,
+      isPop
+    ).then(() => { return; }).catch((e) => { throw new Error(e); });
+  };
 
 export const navComplete = (route, action) => ({
-  type: '@@fans-router/NAVIGATE.COMPLETE',
+  type: actionTypes.NAVIGATE.END,
   route,
   action,
 });

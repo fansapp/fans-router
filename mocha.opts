@@ -1,3 +1,5 @@
 src/**/*.spec.js
 --reporter nyan
 --require babel-register
+--require src/tests/setup.js
+--timeout 10000

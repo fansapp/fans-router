@@ -1,6 +1,8 @@
 module.exports = {
   env: {
     mocha: true,
+    browser: true,
+    es6: true,
   },
   globals: {},
   extends: ['eslint:recommended', 'plugin:react/recommended'],

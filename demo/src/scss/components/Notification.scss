@@ -1,0 +1,60 @@
+.Notification {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
+  padding: 10px;
+  top: 20px;
+  right: 20px;
+  color: white;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+  border-radius: 2px;
+  font-size: 14px;
+
+  &__text {
+    align-self: center;
+    line-height: 1.4;
+  }
+
+  &__button {
+    display: block;
+    text-align: center;
+    align-self: flex-start;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 12px;
+    margin-top: 3px;
+    text-shadow: 0 1px 0 white(0.2);
+    -webkit-appearance: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &--error {
+    background: linear-gradient(to bottom right, $error, darken($error, 10%));
+
+    .Notification__button {
+      color: darken($error, 25%);
+    }
+  }
+
+  &--success {
+    background: linear-gradient(to bottom right, $success, darken($success, 10%));
+
+    .Notification__button {
+      color: darken($success, 25%);
+    }
+  }
+}
+
+.notification-enter {
+  animation: fadeInSlideLeft 400ms ease-out both;
+}
+
+.notification-leave {
+  animation: fadeOutSlideRight 400ms ease-out both;
+}

@@ -1,0 +1,14 @@
+@mixin pseudoElement {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100%;
+}
+
+%pseudo-element {
+  @include pseudoElement;
+}
+
+@function white($opacity) {
+  @return rgba(255, 255, 255, $opacity);
+}

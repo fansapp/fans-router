@@ -3,11 +3,11 @@ import { parse, stringify } from 'query-string';
 
 import { routes, nested } from './mocks';
 import RouteFactory from '../routeFactory';
-import { errorMessages }from '../constants';
+import errorMessages from '../constants/errorMessages';
 
 const tests = () => {
 
-  beforeEach(function() {
+  beforeEach(() => {
     RouteFactory.init(routes, nested);
   });
 
@@ -57,7 +57,7 @@ const tests = () => {
 
   it('converts a nested path', () => {
     expect(() => RouteFactory.parse('/products/fail'))
-      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, "'fail'"));
+      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, 'fail'));
   });
 
   // route parsing
@@ -192,12 +192,12 @@ const tests = () => {
         clientIds: 8,
         test: 'ignore me',
       },
-    })).to.throw(errorMessages.paramNotFound.replace(/{.*?}/g, "'clientId'"));
+    })).to.throw(errorMessages.paramNotFound.replace(/{.*?}/g, 'clientId'));
   });
 
   it('parses a nested path with an empty dynamic parameters', () => {
     expect(() => RouteFactory.parse('/clients//edit'))
-      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, "''"));
+      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, ''));
   });
 
   // dynamic parameter parsing
