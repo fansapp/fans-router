@@ -181,7 +181,7 @@ const middlewares = [
   {
     to: ['root.posts', 'root.posts.details'],
     call: updatePosts,
-    onResolve: (posts, route, dispatch, state, next) => {
+    onResolve: (posts, route, dispatch, state, next /* , abort */) => {
       dispatch({ type: 'POSTS.UPDATE', posts });
       next();
     },
@@ -254,7 +254,8 @@ Optional. A `Promise` to be fulfilled before the navigation; could be an asynchr
 - `route` - The current route
 - `dispatch` - Redux's dispatcher
 - `state` - The current redux store state
-- `next` - If or not the navigation should continue, aborts if not called
+- `next` - If or not the navigation should continue, fires exception if both `next` and `abort` aren't called
+- `abort` - Aborts the navigation immediately, making a redirection possible (can't call both `abort` and `next`)
 
 **Returns:** nothing, but executes `next()` by default if `onResolve` is not implemented
 
@@ -269,7 +270,8 @@ Optional. Callback called when the `Promise` provided in the `call` function has
 - `route` - The current route
 - `dispatch` - Redux's dispatcher
 - `state` - The current redux store state
-- `next` - If or not the navigation should continue, aborts if not called
+- `next` - If or not the navigation should continue, fires exception if both `next` and `abort` aren't called
+- `abort` - Aborts the navigation immediately, making a redirection possible (can't call both `abort` and `next`)
 
 **Returns:** nothing, but executes `next()` by default if `onReject` is not implemented
 
