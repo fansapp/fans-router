@@ -80,15 +80,6 @@ const tests = () => {
     });
   });
 
-  it('parses and validates a path with 2 consecutive slashes', () => {
-    expect(RouteFactory.parse('//about-us')).to.eql({
-      name: 'root.about',
-      path: '/about-us',
-      params: {},
-      query: {},
-    });
-  });
-
   it('converts a path object', () => {
     expect(RouteFactory.parse({ name: 'root.about' })).to.eql({
       name: 'root.about',
@@ -202,6 +193,11 @@ const tests = () => {
         test: 'ignore me',
       },
     })).to.throw(errorMessages.paramNotFound.replace(/{.*?}/g, 'clientId'));
+  });
+
+  it('parses a nested path with an empty dynamic parameters', () => {
+    expect(() => RouteFactory.parse('/clients//edit'))
+      .to.throw(errorMessages.invalidNestedRoute.replace(/{.*?}/g, ''));
   });
 
   // dynamic parameter parsing

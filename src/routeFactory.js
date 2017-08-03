@@ -17,26 +17,18 @@ import {
  */
 const interpretStringRoute = (route, nestedRoutes) => {
   const [url, query] = route.split('?');
-
   if (!url) {
     throw new Error(errorMessages.routeNotFound);
   }
 
+  const nodes = url.replace(/^\/|\/$/g, '');
+  if (!nodes) {
+    return makeRouteObject('root', '/');
+  }
+
   try {
-    const sanitized = url
-          .replace(/\/+/g, '/')       // replace consecutive slashes with a single slash
-          .replace(/\/+$/, '')        // remove trailing slashes
-          .replace(/^\/|\/$/g, '');   // remove starting slashes
-
-    let validatedPath = { name: 'root', params: {} };
-    const validatedQuery = query && parse(query);
-    const validatedUrl = `/${sanitized}${query ? `?${query}` : ''}`;
-
-    if (sanitized) {
-      validatedPath = validateStringPath(sanitized.split('/'), nestedRoutes[0]);
-    }
-
-    return makeRouteObject(validatedPath.name, validatedUrl, validatedQuery, validatedPath.params);
+    const validatedPath = validateStringPath(nodes.split('/'), nestedRoutes[0]);
+    return makeRouteObject(validatedPath.name, route, query && parse(query), validatedPath.params);
   }
   catch ({ message }) {
     throw new Error(errorMessages.invalidNestedRoute.replace(/{.*?}/g, message));
