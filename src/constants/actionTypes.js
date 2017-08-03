@@ -10,8 +10,8 @@ export default {
   },
   NAVIGATE: {
     CANCEL: prefix(NAV, 'CANCEL'),
+    ABORT: prefix(NAV, 'ABORT'),
     END: prefix(NAV, 'END'),
-    FAILURE: prefix(NAV, 'FAILURE'),
     START: prefix(NAV, 'START'),
   },
   HISTORY: {

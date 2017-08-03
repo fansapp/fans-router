@@ -438,6 +438,67 @@ const tests = () => {
     });
   });
 
+  it('handles onResolve callback calling next and abort', () => {
+    const mw = [
+      {
+        to: ['root.about'],
+        call: promise,
+        onResolve: (result, route, dispatch, state, next, abort) => {
+          dispatch('PROMISE1');
+          next();
+          abort();
+        },
+      },
+    ];
+    MiddlewareController.init(mw, routes, history);
+    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+    }).catch((e) => {
+      expect(e).to.eql(errorMessages.abortNext);
+    });
+  });
+
+  it('fires abort event on abort', () => {
+    const mw = [
+      {
+        to: ['root.about'],
+        call: promise,
+        onResolve: (result, route, dispatch, state, next, abort) => {
+          abort();
+          dispatch('PROMISE1');
+        },
+      },
+    ];
+    MiddlewareController.init(mw, routes, history);
+    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+      expect(dispatched).to.eql([
+        actionTypes.NAVIGATE.START,
+        actionTypes.NAVIGATE.ABORT,
+        'PROMISE1',
+      ]);
+    });
+  });
+
+  it('fires late abort event on abort', () => {
+    const mw = [
+      {
+        to: ['root.about'],
+        call: promise,
+        onResolve: (result, route, dispatch, state, next, abort) => {
+          dispatch('PROMISE1');
+          abort();
+        },
+      },
+    ];
+    MiddlewareController.init(mw, routes, history);
+    return MiddlewareController.execute(routes.find(r => r.name === 'root.about'), dispatch, getState).then(() => {
+      expect(dispatched).to.eql([
+        actionTypes.NAVIGATE.START,
+        'PROMISE1',
+        actionTypes.NAVIGATE.ABORT,
+      ]);
+    });
+  });
+
   it('handles onReject callback without next', () => {
     const mw = [
       {

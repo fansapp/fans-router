@@ -145,32 +145,66 @@ export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, re
   }
 
   // if or not we should continue down the middleware list after a callback
-  let willNext = false;
+  let didNext = false;
+  let didAbort = false;
   const next = () => {
-    willNext = true;
+    didNext = true;
+  };
+
+  // if or not we should abort the navigation immediately
+  const abort = () => {
+    didAbort = true;
+    dispatch({
+      type: actionTypes.NAVIGATE.ABORT,
+      route,
+    });
   };
 
   // the desired call te be made before the navigation for this middleware
   const call = mw.call || defaultHooks.call;
   call(route, getState()).then((result) => {
     const onResolve = mw.onResolve || defaultHooks.onResolve;
-    onResolve(result, route, dispatch, getState(), next);
-    if (willNext) {
+    onResolve(result, route, dispatch, getState(), next, abort);
+
+    if (didNext && didAbort) {
+      reject(errorMessages.abortNext);
+      return;
+    }
+
+    if (!didNext && !didAbort) {
+      reject(errorMessages.noNext);
+      return;
+    }
+
+    if (didNext) {
       applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
     }
-    else {
-      reject(errorMessages.noNext);
+
+    if (didAbort) {
+      resolve(route);
       return;
     }
   })
     .catch((result) => {
       const onReject = mw.onReject || defaultHooks.onReject;
-      onReject(result, route, dispatch, getState(), next);
-      if (willNext) {
+      onReject(result, route, dispatch, getState(), next, abort);
+
+      if (didNext && didAbort) {
+        reject(errorMessages.abortNext);
+        return;
+      }
+
+      if (!didNext && !didAbort) {
+        reject(errorMessages.noNext);
+        return;
+      }
+
+      if (didNext) {
         applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
       }
-      else {
-        reject(errorMessages.noNext);
+
+      if (didAbort) {
+        resolve(route);
         return;
       }
     });
