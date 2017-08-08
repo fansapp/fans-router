@@ -9,7 +9,7 @@ const Link = ({ baseClass, children, className, to, navigate, route }) => {
   };
 
   let classes = baseClass;
-  if (to === route.path) {
+  if (route && to === route.path) {
     classes = classes.concat(` ${baseClass}--active`);
   }
 
@@ -23,6 +23,7 @@ const Link = ({ baseClass, children, className, to, navigate, route }) => {
 Link.defaultProps = {
   baseClass: 'Link',
   className: '',
+  route: null,
 };
 
 Link.propTypes = {
@@ -36,7 +37,7 @@ Link.propTypes = {
     name: PropTypes.string.isRequired,
     params: PropTypes.shape().isRequired,
     path: PropTypes.string.isRequired,
-  }).isRequired,
+  }),
 };
 
 export default Link;

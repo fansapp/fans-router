@@ -15,4 +15,5 @@ export default {
   invalidCall: "The 'call' attribute can only be a function returning a Promise.",
   invalidFunction: 'The {param} attribute can only be an array or function.',
   noNext: "A middleware callback ('onResolve', 'onReject') did not call next()",
+  abortNext: "A middleware callback ('onResolve', 'onReject') cannot call both abort() and next()",
 };

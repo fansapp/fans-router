@@ -12,7 +12,6 @@ export default (state = initial, action) => {
     case actionTypes.INITIALIZE.START:
       return {
         ...state,
-        route: action.route,
         routes: action.routes,
       };
 
@@ -29,7 +28,7 @@ export default (state = initial, action) => {
         isNavigating: false,
       };
 
-    case actionTypes.NAVIGATE.FAILURE:
+    case actionTypes.NAVIGATE.ABORT:
     case actionTypes.NAVIGATE.CANCEL:
       return {
         ...state,
