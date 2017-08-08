@@ -14,6 +14,10 @@ import Secret from '../../../secret/components/Secret';
 
 
 const renderView = (route) => {
+  if (!route) {
+    return (<div />);
+  }
+
   switch (route.name) {
     case 'root':
       return <Welcome />;
@@ -41,8 +45,12 @@ const App = ({ route }) => (
   </div>
   );
 
+App.defaultProps = {
+  route: null,
+};
+
 App.propTypes = {
-  route: PropTypes.shape().isRequired,
+  route: PropTypes.shape(),
 };
 
 export default App;

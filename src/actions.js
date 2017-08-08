@@ -10,13 +10,11 @@ export default null;
 export const init = (route, routes) => (dispatch, getState) => {
   dispatch({
     type: actionTypes.INITIALIZE.START,
-    route,
     routes,
   });
 
   dispatch({
     type: actionTypes.INITIALIZE.END,
-    route,
   });
 
   MiddlewareController.execute(

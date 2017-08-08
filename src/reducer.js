@@ -12,7 +12,6 @@ export default (state = initial, action) => {
     case actionTypes.INITIALIZE.START:
       return {
         ...state,
-        route: action.route,
         routes: action.routes,
       };
 
