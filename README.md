@@ -13,7 +13,7 @@ npm install --save fans-router
 ## Usage
 
 Here's a simple example of Root component and a minimalist route setup (in the real world, separate into multiple files).
-This configuration will allow support for `/`, `/login`, `/posts`, `/posts/:postId` and `/secret` paths.
+This configuration will allow support for `/`, `/login`, `/posts`, `/posts/:postId` and `/secret` paths. Be sure to handle the case where `route` is `null`, as it will be if your app’s initial route has to execute middlewares before navigating.
 
 ```js
 import { Provider } from 'react-redux';
@@ -57,6 +57,9 @@ const routes = [
 
 // Route switch
 const renderRoutes = (route) => {
+  if (!route) {
+    return <div />
+  }
   switch (route.name) {
     case 'root':
       return <Welcome />;
