@@ -12,8 +12,9 @@ export const defaultHooks = {
   call: () => new Promise(resolve => resolve()),
   shouldNavigate: () => true,
   onNavigationCancelled: () => { return; },
-  onResolve: (...args) => { args[args.length -1](); },
-  onReject: (...args) => { args[args.length -1](); },
+  // call next by default
+  onResolve: (result, route, dispatch, state, next) => next(),
+  onReject: (result, route, dispatch, state, next) => next(),
 };
 
 export const filterMWs = memoize(100, null, true)(
