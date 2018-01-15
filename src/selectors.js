@@ -1,4 +1,8 @@
-export default {
+import { curryable } from './helpers';
+
+
+const selectors = {
+  getIsNavigating: state => state.router.isNavigating,
   getRoute: (state) => state.router.route,
   getRoutes: (state) => state.router.routes,
   getRouteName: (state) => state.router.route.name,
@@ -10,3 +14,10 @@ export default {
     state.router.route.params[key] : null,
   getParams: (state) => state.router.route.params,
 };
+
+const curriedSelectors = Object.keys(selectors).reduce((all, current) => ({
+  ...all,
+  [current]: curryable(selectors[current]),
+}), {});
+
+export default curriedSelectors;
