@@ -10,6 +10,7 @@ An opinionated react-redux router library.
 npm install --save fans-router
 ```
 
+
 ## Usage
 
 Here's a simple example of Root component and a minimalist route setup (in the real world, separate into multiple files).
@@ -91,6 +92,7 @@ export default (
 );
 ```
 
+
 ## Route configuration
 
 The routes array provided to `createRouter` should contain route objects.
@@ -121,6 +123,7 @@ Example: `/posts/:postId` will populate the `params` attribute of the route obje
 **Type:** `array` of `object`
 
 Optional. Contains all the routes to nest in the current route's scope.
+
 
 ## Route object
 
@@ -156,6 +159,7 @@ A flat object of key values reflecting the url query params (`{ token: 'abc' }` 
 
 A flat object of key values reflecting dynamic parameters in the url (`{ postId: '5' }` -> `/posts/:postId` -> `/posts/5`). 
 
+
 ## Store
 
 Routing information will be available in `store.router`, with the following structure:
@@ -172,6 +176,7 @@ Informations about the current route. Includes name, path, query.
 
 A flattened version of the routes you provided at construction.
 Should be provided when needed.
+
 
 ## Middlewares
 
@@ -281,6 +286,16 @@ Optional. Callback called when the `Promise` provided in the `call` function has
 Optional. Callback called when the `Promise` provided in the `call` function has rejected.
 
 
+## Helpers
+
+#### `matchRoute`
+
+**Parameters:** 
+- `routeName` - The route name of the base route
+- `routes` - `string` or `[string]`, 1 or many route names
+
+**Returns:** a `boolean` specifying if or not at least one of the `routes` are matched in `routeName`
+
 ## Selectors
 
 To easily get information from the store, various store selectors can also be imported from `fans-router`.
@@ -291,6 +306,13 @@ import { getRoute, GetQuery, getParam } from 'fans-router';
 ```
 
 Here are all the different selectors:
+
+#### `getIsNavigating`
+
+**Parameters:** 
+- `state` - The current redux store state
+
+**Returns:** a `boolean` specifying if or not a navigation is currently taking place
 
 #### `getRoute`
 
@@ -349,3 +371,21 @@ Here are all the different selectors:
 - `key` - The name of the dynamic parameter
 
 **Returns:** `string` value for the provided dynamic parameter key
+
+
+## PropTypes
+
+React PropTypes are importable to ensure you don't have to rewrite the router reducer structure when using parts of it in your components.
+`isNavigating`, `route` and `routes` are all available in the imported `routerPropTypes` object. They are all set as `isRequired`, since they
+are always present in the router reducer to ensure proper package behavior.
+
+
+```js
+import { routerPropTypes } from 'fans-router';
+
+Component.propTypes = {
+  isNavigating: routerPropTypes.isNavigating,
+  route: routerPropTypes.route,
+  routes: routerPropTypes.routes,
+};
+```
