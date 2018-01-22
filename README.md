@@ -389,3 +389,32 @@ Component.propTypes = {
   routes: routerPropTypes.routes,
 };
 ```
+
+## React Components
+
+#### `Link`
+
+`Link` is importable from `fans-router`, wrapping an anchor tag that dispatches a `navigate` action. Simply specify the path into the `to` prop, and it will navigate to this route. If the link points to the current route, the `--active` CSS modifier will be applied, and if the route which the link is pointing is in the hierarchy of the current route, the `--tree` modifier will also be applied.
+
+
+```js
+import { Link } from 'fans-router';
+
+
+render() {
+  return (
+    <Link
+      className="MyClass"
+      to="/about-us"
+    >
+    I point to the about page!
+    </Link>
+  );
+}
+```
+
+**Props** 
+- `baseClass` - The base CSS class for this component, will use this base class for `--active` and `--tree` modifiers (`Link` by default)
+- `className` - Additional CSS classes you wish to add
+- `ignoreClasses` - Array of strings (`active` and/or `tree` are the possible avlues), specifies which CSS modifiers explained above will be omitted
+- `to` - Path where the link will point to (ex: `/user/123/edit`), will be validated by the router, thus failing if it does not exist

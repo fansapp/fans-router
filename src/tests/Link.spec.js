@@ -106,6 +106,20 @@ describe('<Link />', () => {
     expect(wrapper.node.props.className).to.include('Link--active');
   });
 
+  it('omits default active class', () => {
+    const wrapper = shallow(
+      <Link navigate={() => true}
+        route={aboutRoute}
+        ignoreClasses={['active']}
+        to="/about-us"
+        matchRoute={matchRoute('root.test')}
+      >
+        link
+      </Link>
+    );
+    expect(wrapper.node.props.className).to.not.include('Link--active');
+  });
+
   it('implements custom base class active class', () => {
     const baseClass = 'custom';
     const wrapper = shallow(
@@ -167,13 +181,33 @@ describe('<Link />', () => {
     expect(wrapper.node.props.className).to.include(`${baseClass}--tree`);
   });
 
-  it('implements custom base class tree class 2 levels deep', () => {
+  it('omits custom base class tree class 1 level deep', () => {
     const baseClass = 'custom';
     const linkRoute = { ...baseRoute, path: '/clients/5/edit', name: 'root.clients.id.edit' };
 
     const wrapper = shallow(
       <Link
         navigate={() => true}
+        ignoreClasses={['tree']}
+        baseClass={baseClass}
+        route={linkRoute}
+        to="/clients/5"
+        matchRoute={matchRoute(linkRoute.name)}
+      >
+        link
+      </Link>
+    );
+    expect(wrapper.node.props.className).to.not.include(`${baseClass}--tree`);
+  });
+
+  it('omits custom base class tree class 2 levels deep', () => {
+    const baseClass = 'custom';
+    const linkRoute = { ...baseRoute, path: '/clients/5/edit', name: 'root.clients.id.edit' };
+
+    const wrapper = shallow(
+      <Link
+        navigate={() => true}
+        ignoreClasses={['tree']}
         baseClass={baseClass}
         route={linkRoute}
         to="/clients"
@@ -182,6 +216,6 @@ describe('<Link />', () => {
         link
       </Link>
     );
-    expect(wrapper.node.props.className).to.include(`${baseClass}--tree`);
+    expect(wrapper.node.props.className).to.not.include(`${baseClass}--tree`);
   });
 });

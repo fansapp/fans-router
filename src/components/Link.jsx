@@ -7,6 +7,7 @@ const Link = ({
   baseClass,
   children,
   className,
+  ignoreClasses,
   matchRoute,
   to,
   navigate,
@@ -19,11 +20,12 @@ const Link = ({
 
   let classes = baseClass;
 
-  if (route && to === route.path) {
+
+  if (route && to === route.path && !ignoreClasses.includes('active')) {
     classes = classes.concat(` ${baseClass}--active`);
   }
 
-  if (matchRoute(RouteFactory.parse(to).name)) {
+  if (matchRoute(RouteFactory.parse(to).name) && !ignoreClasses.includes('tree')) {
     classes = classes.concat(` ${baseClass}--tree`);
   }
 
@@ -37,6 +39,7 @@ const Link = ({
 Link.defaultProps = {
   baseClass: 'Link',
   className: '',
+  ignoreClasses: [],
   route: null,
 };
 
@@ -44,6 +47,7 @@ Link.propTypes = {
   baseClass: PropTypes.string,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  ignoreClasses: PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
   matchRoute: PropTypes.func.isRequired,
   to: PropTypes.string.isRequired,
   navigate: PropTypes.func.isRequired,
