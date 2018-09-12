@@ -7,7 +7,7 @@ An opinionated react-redux router library.
 ## Getting started
 
 ```
-npm install --save fans-router
+npm install --save history fans-router
 ```
 
 

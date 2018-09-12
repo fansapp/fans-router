@@ -1,6 +1,6 @@
 {
   "name": "fans-router",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "A simple react-redux router",
   "main": "./dist/index.js",
   "directories": {
@@ -60,6 +60,7 @@
     "history": "^4.6.3"
   },
   "dependencies": {
+    "history": "^4.7.2",
     "lru-memoize": "^1.0.2",
     "prop-types": "^15.6.0",
     "query-string": "^4.3.4"
