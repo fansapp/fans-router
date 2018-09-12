@@ -24,10 +24,12 @@ export const init = (route, routes) => (dispatch, getState) => {
   ).then(() => { return; }).catch((e) => { throw new Error(e); });
 };
 
-export const navigate = (path, historyAction = actionTypes.HISTORY.PUSH) =>
+export const navigate = (path, force = false, historyAction = actionTypes.HISTORY.PUSH) =>
   (dispatch, getState) => {
     const isPop = historyAction === actionTypes.HISTORY.POP;
-    if (getState().router.isNavigating || (!isPop && path === history.location.pathname)) {
+    if (!force && 
+      getState().router.isNavigating || 
+        (!isPop && path === history.location.pathname)) {
       return;
     }
 
