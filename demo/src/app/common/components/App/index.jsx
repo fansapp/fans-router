@@ -6,6 +6,7 @@ import './styles.scss';
 import Notification from '../../../notification/containers/Notification';
 import Posts from '../../../posts/containers/Posts';
 import Post from '../../../posts/containers/Post';
+import PostComments from '../../../posts/containers/PostComments';
 import Welcome from '../Welcome';
 import TopBar from '../../components/TopBar';
 import SideBar from '../SideBar';
@@ -25,6 +26,8 @@ const renderView = (route) => {
       return <Posts />;
     case 'root.posts.details':
       return <Post id={route.params.postId} />;
+    case 'root.comments':
+      return <PostComments />;
     case 'root.login':
       return <Login />;
     case 'root.secret':

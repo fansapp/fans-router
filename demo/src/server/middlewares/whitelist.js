@@ -1,4 +1,4 @@
-const whitelist = ['', 'posts', 'login', 'secret'];
+const whitelist = ['', 'posts', 'login', 'secret', 'comments'];
 
 export default (req, res, next) => {
   const firstParam = req.path.split('/')[1];
