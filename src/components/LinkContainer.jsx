@@ -4,14 +4,17 @@ import { navigate } from '../actions';
 import { getRoute, getRouteName } from '../selectors';
 import { matchRoute } from '../helpers';
 
-
 const mapState = state => ({
   route: getRoute(state),
   matchRoute: matchRoute(getRouteName(state)),
 });
 
 const mapActions = dispatch => ({
-  navigate: (destination, routes) => { dispatch(navigate(destination, routes)); },
+  navigate: (destination, force, historyAction) =>
+    dispatch(navigate(destination, force, historyAction)),
 });
 
-export default connect(mapState, mapActions)(LinkComponent);
+export default connect(
+  mapState,
+  mapActions
+)(LinkComponent);

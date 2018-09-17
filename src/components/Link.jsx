@@ -10,11 +10,15 @@ const Link = ({
   ignoreClasses,
   matchRoute,
   to,
+  force,
   navigate,
   route,
 }) => {
   const handleClick = (e) => {
     e.preventDefault();
+    if(force){
+     return navigate(to, force, 'POP');
+    }
     navigate(to);
   };
 
@@ -30,7 +34,7 @@ const Link = ({
   }
 
   return (
-    <a className={classes.concat(` ${className}`)} href={to} onClick={handleClick}>
+    <a className={classes.concat(` ${className}`)} href={to}  onClick={handleClick}>
       {children}
     </a>
   );
@@ -39,6 +43,7 @@ const Link = ({
 Link.defaultProps = {
   baseClass: 'Link',
   className: '',
+  force: false,
   ignoreClasses: [],
   route: null,
 };
@@ -50,6 +55,7 @@ Link.propTypes = {
   ignoreClasses: PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
   matchRoute: PropTypes.func.isRequired,
   to: PropTypes.string.isRequired,
+  force: PropTypes.bool,
   navigate: PropTypes.func.isRequired,
   route: PropTypes.shape({
     query: PropTypes.shape().isRequired,
