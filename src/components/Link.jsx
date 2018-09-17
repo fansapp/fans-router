@@ -17,7 +17,7 @@ const Link = ({
   const handleClick = (e) => {
     e.preventDefault();
     if(force){
-     return navigate(to, force, 'POP');
+     return navigate(to, force);
     }
     navigate(to);
   };

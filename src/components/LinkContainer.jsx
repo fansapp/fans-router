@@ -10,8 +10,8 @@ const mapState = state => ({
 });
 
 const mapActions = dispatch => ({
-  navigate: (destination, force, historyAction) =>
-    dispatch(navigate(destination, force, historyAction)),
+  navigate: (destination, force) =>
+    dispatch(navigate(destination, force)),
 });
 
 export default connect(

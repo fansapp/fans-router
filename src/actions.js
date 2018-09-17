@@ -50,8 +50,8 @@ export const navigate = (
 ) => (dispatch, getState) => {
   const isPop = historyAction === actionTypes.HISTORY.POP;
   if (
-    (!force && getState().router.isNavigating) ||
-    (!isPop && path === history.location.pathname.concat(history.location.search))
+    (getState().router.isNavigating) ||
+    (!isPop && !force && path === history.location.pathname.concat(history.location.search))
   ) {
     return;
   }
