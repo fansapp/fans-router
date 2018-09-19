@@ -10,7 +10,7 @@ const SideBar = () => (
     <div className="SideBar__navigation">
       <ul>
         <li className="SideBar__link"><Link to="/">Home</Link></li>
-        <li className="SideBar__link"><Link force to="/posts">Posts</Link></li>
+        <li className="SideBar__link"><Link to="/posts">Posts</Link></li>
         <li className="SideBar__link"><Link to="/login">Login</Link></li>
         <li className="SideBar__link"><Link to="/secret">Secret</Link></li>
       </ul>
