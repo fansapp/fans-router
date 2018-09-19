@@ -21,6 +21,10 @@ export default [
         name: 'secret',
         path: '/secret',
       },
+      {
+        name: 'comments',
+        path: '/comments',
+      },
     ],
   },
 ];

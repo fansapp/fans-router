@@ -6,4 +6,7 @@ export default {
   LOGIN: {
     SUCCESS: 'LOGIN.SUCCESS',
   },
+  REFRESH: {
+    SUCCESS: 'REFRESH.SUCCESS',
+  },
 };

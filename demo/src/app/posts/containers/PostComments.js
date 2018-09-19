@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
-import Posts from '../components/Posts';
+import PostComments from '../components/PostComments';
 import { reload } from '../../../../../dist';
 
 
 const mapState = state => ({
-  posts: state.posts.items,
+  comments: state.comments.items,
 });
 
 const mapActions = dispatch => ({
   onRefresh: () => dispatch(reload()),
 });
 
-export default connect(mapState, mapActions)(Posts);
+export default connect(mapState, mapActions)(PostComments);
