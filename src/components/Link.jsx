@@ -16,10 +16,7 @@ const Link = ({
 }) => {
   const handleClick = (e) => {
     e.preventDefault();
-    if(force){
-     return navigate(to, force);
-    }
-    navigate(to);
+    navigate(to, force);
   };
 
   let classes = baseClass;
