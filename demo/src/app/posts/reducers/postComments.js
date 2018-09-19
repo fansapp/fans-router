@@ -2,10 +2,10 @@
 
 export default (state = { items: [] }, action) => {
   switch (action.type) {
-    case 'POSTS.UPDATE':
+    case 'POSTS.COMMENTS':
       return {
         ...state,
-        items: action.posts,
+        items: action.comments,
       };
     default: return state;
   }

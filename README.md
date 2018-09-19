@@ -418,3 +418,18 @@ render() {
 - `className` - Additional CSS classes you wish to add
 - `ignoreClasses` - Array of strings (`active` and/or `tree` are the possible avlues), specifies which CSS modifiers explained above will be omitted
 - `to` - Path where the link will point to (ex: `/user/123/edit`), will be validated by the router, thus failing if it does not exist
+- `force` (Optional prop - `false` by default) - If true, clicking on the Link will cause a navigate even if you're on the same path. 
+
+## `Actions`
+
+#### `reload`
+
+**Type:** `function`
+
+`reload` is importable from `fans-router`, it allows you to dispatch a `re-render` action. You simple need to hook it up to your mapActions and excute it where necessary.
+
+```js
+const mapActions = dispatch => ({
+  onReload: () => dispatch(reload()),
+});
+```

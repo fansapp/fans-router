@@ -1,20 +1,21 @@
-import { updatePosts } from '../../posts/rest';
+import { updatePosts, getPostComments } from '../../posts/rest';
 import { navigate } from '../../../../../dist';
 
 
 export default [
   {
-    to: ['root'],
-    call: () => new Promise(resolve => setTimeout(() => resolve(), 2000)),
+    to: ['root.posts', 'root.posts.details'],
+    call: route => updatePosts(route.query.postsNum),
     onResolve: (posts, route, dispatch, state, next) => {
+      dispatch({ type: 'POSTS.UPDATE', posts });
       next();
     },
   },
   {
-    to: ['root.posts', 'root.posts.details'],
-    call: updatePosts,
-    onResolve: (posts, route, dispatch, state, next) => {
-      dispatch({ type: 'POSTS.UPDATE', posts });
+    to: ['root.comments'],
+    call: route => getPostComments(route.query.postId),
+    onResolve: (comments, route, dispatch, state, next) => {
+      dispatch({ type: 'POSTS.COMMENTS', comments });
       next();
     },
   },

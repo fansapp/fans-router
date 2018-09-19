@@ -19,7 +19,7 @@ class FansRouterProvider extends Component {
 
      this.history.listen((location, action) => {
        if (action === actionTypes.HISTORY.POP) {
-         context.store.dispatch(navigate(location.pathname.concat(location.search), action));
+         context.store.dispatch(navigate(location.pathname.concat(location.search), false, action));
        }
       });
 
