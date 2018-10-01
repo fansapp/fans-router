@@ -1,4 +1,37 @@
 .View {
+  &__wrap {
+    width: 10%;
+
+    &__search {
+      width: 400px;
+      display:flex;
+      justify-content: space-between;
+
+      &--searchTerm {
+        width: 80%;
+        border: 3px solid blue;
+        padding: 5px;
+        height: 100%;
+        border-radius: 5px;
+        outline: none;
+        color:black;
+      }
+
+      &--searchButton {
+        height: 40px;
+        border: 1px solid blue;
+        background: blue;
+        text-align: center;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 20px;
+      }
+    }
+  }
+
+
+
   &__controls {
     display: flex;
     justify-content: space-between;
@@ -26,3 +59,4 @@
     }
   }
 }
+

@@ -422,14 +422,31 @@ render() {
 
 ## `Actions`
 
+The following can be imported through `fans-router`
+
 #### `reload`
 
 **Type:** `function`
 
-`reload` is importable from `fans-router`, it allows you to dispatch a `re-render` action. You simple need to hook it up to your mapActions and excute it where necessary.
+`reload` allows you to dispatch a `re-render` action. You simple need to hook it up to your mapActions and excute it where necessary.
 
 ```js
 const mapActions = dispatch => ({
   onReload: () => dispatch(reload()),
+});
+```
+
+#### `replace`
+
+**Type:** `function`
+
+`replace` allows you to dispatch a url replace without causing a `re-render` action.
+
+**Parameter:**
+- `path` - Type `string` is the path you want to replace the current URL in the address bar with. Note that it does not manipulate the browser's history, it simply replaces the current URL with the path you set.
+
+```js
+const mapActions = dispatch => ({
+  onReplace: (path) => dispatch(replace(path)),
 });
 ```
