@@ -62,7 +62,7 @@
     "react-redux": "4.4.8",
     "react-transition-group": "1.2.0",
     "redux": "3.7.1",
-    "redux-logger": "3.0.6",
+    "redux-logger": "2.10.2",
     "redux-thunk": "2.2.0",
     "resolve-url-loader": "2.1.0",
     "sass-loader": "6.0.6",
