@@ -30,6 +30,21 @@ class MiddlewareController {
     return this.middlewares;
   }
 
+  applyMWpromise(route, shouldNavigateEnd, dispatch, getState, isPop = false) {
+    return new Promise((resolve, reject) => {
+      applyMWs(
+        filterMWs(this.middlewares, route.name),
+        route,
+        shouldNavigateEnd,
+        dispatch,
+        getState,
+        !isPop ? this.history.push : this.history.replace,
+        resolve,
+        reject
+      );
+    });
+  }
+  
   /**
    * Execute each middleware sequentially for the route to be navigated
    * @param {object} route The route where the app is navigating
@@ -43,18 +58,11 @@ class MiddlewareController {
       type: actionTypes.NAVIGATE.START,
       route,
     });
+    return this.applyMWpromise(route, true ,dispatch, getState, isPop)
+  }
 
-    return new Promise((resolve, reject) => {
-      applyMWs(
-        filterMWs(this.middlewares, route.name),
-        route,
-        dispatch,
-        getState,
-        !isPop ? this.history.push : this.history.replace,
-        resolve,
-        reject
-      );
-    });
+  replace(route, dispatch, getState, isPop = false) {
+    return this.applyMWpromise(route, false ,dispatch, getState, isPop)
   }
 }
 
