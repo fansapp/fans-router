@@ -3,7 +3,6 @@ import memoize from 'lru-memoize';
 import errorMessages from '../constants/errorMessages';
 import actionTypes from '../constants/actionTypes';
 
-
 /**
  * Default hooks for middlewares which didn't implement them
  * @returns {object} The default hooks
@@ -11,14 +10,17 @@ import actionTypes from '../constants/actionTypes';
 export const defaultHooks = {
   call: () => new Promise(resolve => resolve()),
   shouldNavigate: () => true,
-  onNavigationCancelled: () => { return; },
+  onNavigationCancelled: () => {
+    return;
+  },
   // call next by default
   onResolve: (result, route, dispatch, state, next) => next(),
   onReject: (result, route, dispatch, state, next) => next(),
 };
 
-export const filterMWs = memoize(100, null, true)(
-  (mws, routeName) => mws.filter(mw => mw.to.includes(routeName)));
+export const filterMWs = memoize(100, null, true)((mws, routeName) =>
+  mws.filter(mw => mw.to.includes(routeName))
+);
 
 /**
  * Validate each middleware and their attributes
@@ -31,8 +33,8 @@ export const validateMiddlewares = (middlewares, routes) => {
     throw new Error(errorMessages.invalidMWArray);
   }
 
-  return middlewares.map((mw) => {
-    if ((typeof mw) !== 'object') {
+  return middlewares.map(mw => {
+    if (typeof mw !== 'object') {
       throw new Error(errorMessages.invalidMWType);
     }
 
@@ -45,10 +47,10 @@ export const validateMiddlewares = (middlewares, routes) => {
     newMw.to = mw.to;
 
     // validate 'to' data type
-    if ((typeof mw.to) === 'string') {
+    if (typeof mw.to === 'string') {
       newMw.to = [mw.to];
     } else if (Array.isArray(mw.to)) {
-      if (mw.to.some(t => (typeof t) !== 'string')) {
+      if (mw.to.some(t => typeof t !== 'string')) {
         throw new Error(errorMessages.invalidTo);
       }
     } else {
@@ -56,9 +58,9 @@ export const validateMiddlewares = (middlewares, routes) => {
     }
 
     // validate if 'to' targets an existing route
-    const routeNames = routes.map( r => r.name);
+    const routeNames = routes.map(r => r.name);
     newMw.to.forEach(t => {
-      if(!routeNames.includes(t)) {
+      if (!routeNames.includes(t)) {
         throw new Error(errorMessages.invalidMWRoute.replace(/{.*?}/g, t));
       }
     });
@@ -66,42 +68,49 @@ export const validateMiddlewares = (middlewares, routes) => {
     // validate 'call'
     if (!['function', 'undefined'].includes(typeof mw.call)) {
       throw new Error(errorMessages.invalidCall);
-    } else if ((typeof mw.call) === 'function') {
+    } else if (typeof mw.call === 'function') {
       newMw.call = mw.call;
     }
 
     // validate 'onResolve'
     if (!['function', 'undefined'].includes(typeof mw.onResolve)) {
-      throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'onResolve'));
-    } else if ((typeof mw.onResolve) === 'function') {
+      throw new Error(
+        errorMessages.invalidFunction.replace(/{.*?}/g, 'onResolve')
+      );
+    } else if (typeof mw.onResolve === 'function') {
       newMw.onResolve = mw.onResolve;
     }
 
     // validate 'onReject'
     if (!['function', 'undefined'].includes(typeof mw.onReject)) {
-      throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'onReject'));
-    } else if ((typeof mw.onReject) === 'function') {
+      throw new Error(
+        errorMessages.invalidFunction.replace(/{.*?}/g, 'onReject')
+      );
+    } else if (typeof mw.onReject === 'function') {
       newMw.onReject = mw.onReject;
     }
 
     // validate 'shouldNavigate'
     if (!['function', 'undefined'].includes(typeof mw.shouldNavigate)) {
-      throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'shouldNavigate'));
-    } else if ((typeof mw.shouldNavigate) === 'function') {
+      throw new Error(
+        errorMessages.invalidFunction.replace(/{.*?}/g, 'shouldNavigate')
+      );
+    } else if (typeof mw.shouldNavigate === 'function') {
       newMw.shouldNavigate = mw.shouldNavigate;
     }
 
     // validate 'onNavigationCancelled'
     if (!['function', 'undefined'].includes(typeof mw.onNavigationCancelled)) {
-      throw new Error(errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancelled'));
-    } else if ((typeof mw.onNavigationCancelled) === 'function') {
+      throw new Error(
+        errorMessages.invalidFunction.replace(/{.*?}/g, 'onNavigationCancelled')
+      );
+    } else if (typeof mw.onNavigationCancelled === 'function') {
       newMw.onNavigationCancelled = mw.onNavigationCancelled;
     }
 
     return newMw;
   });
 };
-
 
 /**
  * Loops over every middleware and checks if or not it should be called,
@@ -114,17 +123,26 @@ export const validateMiddlewares = (middlewares, routes) => {
  * @param {function} resolve The resolution callback of the main Promise
  * @param {function} reject The rejection callback of the main Promise
  */
-export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, resolve, reject) => {
+export const applyMWs = (
+  middlewares,
+  route,
+  shouldNavigateEnd,
+  dispatch,
+  getState,
+  historyFunc,
+  resolve,
+  reject
+) => {
   const mw = middlewares[0];
   const nextMws = middlewares.slice(1, middlewares.length);
-
   // finished looping
   if (middlewares.length === 0) {
-    dispatch({
-      type: actionTypes.NAVIGATE.END,
-      route,
-    });
-
+    if (shouldNavigateEnd) {
+      dispatch({
+        type: actionTypes.NAVIGATE.END,
+        route,
+      });
+    }
     // change url in browser to the desired path
     historyFunc(route.path);
     resolve(route);
@@ -139,7 +157,8 @@ export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, re
       route,
     });
 
-    const onNavigationCancelled = mw.onNavigationCancelled || defaultHooks.onNavigationCancelled;
+    const onNavigationCancelled =
+      mw.onNavigationCancelled || defaultHooks.onNavigationCancelled;
     onNavigationCancelled(route, dispatch, getState());
     resolve(route);
     return;
@@ -163,30 +182,40 @@ export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, re
 
   // the desired call te be made before the navigation for this middleware
   const call = mw.call || defaultHooks.call;
-  call(route, getState()).then((result) => {
-    const onResolve = mw.onResolve || defaultHooks.onResolve;
-    onResolve(result, route, dispatch, getState(), next, abort);
+  call(route, getState())
+    .then(result => {
+      const onResolve = mw.onResolve || defaultHooks.onResolve;
+      onResolve(result, route, dispatch, getState(), next, abort);
 
-    if (didNext && didAbort) {
-      reject(errorMessages.abortNext);
-      return;
-    }
+      if (didNext && didAbort) {
+        reject(errorMessages.abortNext);
+        return;
+      }
 
-    if (!didNext && !didAbort) {
-      reject(errorMessages.noNext);
-      return;
-    }
+      if (!didNext && !didAbort) {
+        reject(errorMessages.noNext);
+        return;
+      }
 
-    if (didNext) {
-      applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
-    }
+      if (didNext) {
+        applyMWs(
+          nextMws,
+          route,
+          shouldNavigateEnd,
+          dispatch,
+          getState,
+          historyFunc,
+          resolve,
+          reject
+        );
+      }
 
-    if (didAbort) {
-      resolve(route);
-      return;
-    }
-  })
-    .catch((result) => {
+      if (didAbort) {
+        resolve(route);
+        return;
+      }
+    })
+    .catch(result => {
       const onReject = mw.onReject || defaultHooks.onReject;
       onReject(result, route, dispatch, getState(), next, abort);
 
@@ -201,7 +230,16 @@ export const applyMWs = (middlewares, route, dispatch, getState, historyFunc, re
       }
 
       if (didNext) {
-        applyMWs(nextMws, route, dispatch, getState, historyFunc, resolve, reject);
+        applyMWs(
+          nextMws,
+          route,
+          shouldNavigateEnd,
+          dispatch,
+          getState,
+          historyFunc,
+          resolve,
+          reject
+        );
       }
 
       if (didAbort) {
