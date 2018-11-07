@@ -157,7 +157,7 @@ A flat object of key values reflecting the url query params (`{ token: 'abc' }` 
 
 **Type:** `object`
 
-A flat object of key values reflecting dynamic parameters in the url (`{ postId: '5' }` -> `/posts/:postId` -> `/posts/5`). 
+A flat object of key values reflecting dynamic parameters in the url (`{ postId: '5' }` -> `/posts/:postId` -> `/posts/5`).
 
 
 ## Store
@@ -180,8 +180,8 @@ Should be provided when needed.
 
 ## Middlewares
 
-Middlewares can also be provided to `RouterProvider`. 
-The middleware array provided to should contain route middleware objects, 
+Middlewares can also be provided to `RouterProvider`.
+The middleware array provided to should contain route middleware objects,
 acting as transition hooks and actions to be called upon a specifc route navigation.
 
 ```js
@@ -223,7 +223,7 @@ Required. Contains the route names that will implement the transition hooks or a
 **Type:** `function` returning a `boolean`
 
 **Parameters:**
-- `route` - The current route 
+- `route` - The current route
 - `state` - The current redux store state
 
 **Returns:** `true` by default
@@ -239,7 +239,7 @@ Optional. Specifies if or not the navigation should proceed or cancel at a preli
 - `dispatch` - Redux's dispatcher
 - `state` - The current redux store state
 
-Optional. Callback called when the navigation has cancelled because of a falsy `shouldNavigate`. 
+Optional. Callback called when the navigation has cancelled because of a falsy `shouldNavigate`.
 
 #### `call`
 
@@ -273,7 +273,7 @@ Optional. Callback called when the `Promise` provided in the `call` function has
 
 **Type:** `function`
 
-**Parameters:** 
+**Parameters:**
 - `result` - The current route
 - `route` - The current route
 - `dispatch` - Redux's dispatcher
@@ -290,11 +290,17 @@ Optional. Callback called when the `Promise` provided in the `call` function has
 
 #### `matchRoute`
 
-**Parameters:** 
+**Parameters:**
 - `routeName` - The route name of the base route
 - `routes` - `string` or `[string]`, 1 or many route names
 
 **Returns:** a `boolean` specifying if or not at least one of the `routes` are matched in `routeName`
+
+#### `replace`
+
+**Parameter:**
+- `path` - Type `string` is the path you want to replace the current URL in the address bar with.
+
 
 ## Selectors
 
@@ -309,49 +315,49 @@ Here are all the different selectors:
 
 #### `getIsNavigating`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** a `boolean` specifying if or not a navigation is currently taking place
 
 #### `getRoute`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** a route `object`
 
 #### `getRoutes`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** an array of all the supported route `object`
 
 #### `getRouteName`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** `string` of the current route name
 
 #### `getRoutePath`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** `string` of the current route path
 
 #### `getQuery`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** flat key value `object` of the url query
 
 #### `getQueryParam`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 - `key` - The name of the query parameter
 
@@ -359,14 +365,14 @@ Here are all the different selectors:
 
 #### `getParams`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 
 **Returns:** flat key value `object` of the url dynamic parameters
 
 #### `getParam`
 
-**Parameters:** 
+**Parameters:**
 - `state` - The current redux store state
 - `key` - The name of the dynamic parameter
 
@@ -413,12 +419,12 @@ render() {
 }
 ```
 
-**Props** 
+**Props**
 - `baseClass` - The base CSS class for this component, will use this base class for `--active` and `--tree` modifiers (`Link` by default)
 - `className` - Additional CSS classes you wish to add
 - `ignoreClasses` - Array of strings (`active` and/or `tree` are the possible avlues), specifies which CSS modifiers explained above will be omitted
 - `to` - Path where the link will point to (ex: `/user/123/edit`), will be validated by the router, thus failing if it does not exist
-- `force` (Optional prop - `false` by default) - If true, clicking on the Link will cause a navigate even if you're on the same path. 
+- `force` (Optional prop - `false` by default) - If true, clicking on the Link will cause a navigate even if you're on the same path.
 
 ## `Actions`
 
@@ -433,20 +439,5 @@ The following can be imported through `fans-router`
 ```js
 const mapActions = dispatch => ({
   onReload: () => dispatch(reload()),
-});
-```
-
-#### `replace`
-
-**Type:** `function`
-
-`replace` allows you to dispatch a url replace without causing a `re-render` action.
-
-**Parameter:**
-- `path` - Type `string` is the path you want to replace the current URL in the address bar with. Note that it does not manipulate the browser's history, it simply replaces the current URL with the path you set.
-
-```js
-const mapActions = dispatch => ({
-  onReplace: (path) => dispatch(replace(path)),
 });
 ```

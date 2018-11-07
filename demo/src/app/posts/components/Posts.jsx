@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { parse, stringify } from 'query-string';
-import { Link } from '../../../../../dist';
+import { Link, replace } from '../../../../../dist';
 import './styles.scss';
 
 const appendParams = (url, params = {}) => {
@@ -36,7 +36,7 @@ class Posts extends React.Component {
   }
 
   render() {
-    const { posts, onRefresh, onReplace, router } = this.props;
+    const { posts, onRefresh, router } = this.props;
     return (
       <div className="View">
         <h1>Posts</h1>
@@ -51,7 +51,7 @@ class Posts extends React.Component {
             <button
               type="submit"
               onClick={() =>
-                onReplace(
+                replace(
                   appendParams(router.route.path, {
                     search: this.state.search,
                   })
@@ -89,7 +89,6 @@ Posts.propTypes = {
   posts: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   router: PropTypes.shape().isRequired,
   onRefresh: PropTypes.func.isRequired,
-  onReplace: PropTypes.func.isRequired,
 };
 
 export default Posts;
