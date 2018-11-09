@@ -1,3 +1,5 @@
+import history from './history';
+
 /*
   Helper to splice together 2 arrays like arr.concat(),
   except elements in 'arr1' containig 'empty' are first "filled" with elements from arr2.
@@ -55,4 +57,9 @@ export const matchRoute = curryable((routeName, routes) => {
   }
 })
 
-export default null;
+export const replace = path => {
+  if (path === history.location.pathname.concat(history.location.search)) {
+    return;
+  }
+  history.replace(path);
+};

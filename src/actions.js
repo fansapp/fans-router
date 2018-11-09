@@ -43,24 +43,6 @@ export const reload = () => {
   };
 };
 
-export const replace = path => (dispatch, getState) => {
-  if (path === history.location.pathname.concat(history.location.search)) {
-    return;
-  }
-  MiddlewareController.replace(
-    RouteFactory.parse(path),
-    dispatch,
-    getState,
-    true
-  )
-    .then(() => {
-      return;
-    })
-    .catch(e => {
-      throw new Error(e);
-    });
-};
-
 export const navigate = (
   path,
   force = false,
