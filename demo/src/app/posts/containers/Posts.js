@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import Posts from '../components/Posts';
-import { reload, replace } from '../../../../../dist';
+import { reload } from '../../../../../dist';
 
 
 const mapState = state => ({
@@ -10,7 +10,6 @@ const mapState = state => ({
 
 const mapActions = dispatch => ({
   onRefresh: () => dispatch(reload()),
-  onReplace: path => dispatch(replace(path)),
 });
 
 export default connect(mapState, mapActions)(Posts);

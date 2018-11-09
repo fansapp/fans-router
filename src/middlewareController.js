@@ -44,7 +44,7 @@ class MiddlewareController {
       );
     });
   }
-  
+
   /**
    * Execute each middleware sequentially for the route to be navigated
    * @param {object} route The route where the app is navigating
@@ -59,10 +59,6 @@ class MiddlewareController {
       route,
     });
     return this.applyMWpromise(route, true ,dispatch, getState, isPop)
-  }
-
-  replace(route, dispatch, getState, isPop = false) {
-    return this.applyMWpromise(route, false ,dispatch, getState, isPop)
   }
 }
 
