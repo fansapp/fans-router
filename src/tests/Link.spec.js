@@ -93,6 +93,40 @@ describe('<Link />', () => {
     expect(onNavigate.called).to.be.true;
   });
 
+  it('calls onClick when provided', () => {
+    const onClick = sinon.spy();
+    const wrapper = shallow(
+      <Link
+        navigate={() => true}
+        route={aboutRoute}
+        onClick={onClick}
+        to="/about-us"
+        matchRoute={matchRoute('root.test')}
+      >
+        link
+      </Link>
+    );
+    wrapper.simulate('click', { preventDefault() {} });
+    expect(onClick.called).to.be.true;
+  });
+
+  it('does not break if onClick is not a function', () => {
+    const onClick = 'bleh';
+    const wrapper = shallow(
+      <Link
+        navigate={() => true}
+        route={aboutRoute}
+        onClick={onClick}
+        to="/about-us"
+        matchRoute={matchRoute('root.test')}
+      >
+        link
+      </Link>
+    );
+
+    expect(() => wrapper.simulate('click', { preventDefault() {} })).not.to.throw();
+  });
+
   it('implements default active class', () => {
     const wrapper = shallow(
       <Link navigate={() => true}
