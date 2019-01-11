@@ -9,6 +9,7 @@ const Link = ({
   className,
   ignoreClasses,
   matchRoute,
+  onClick,
   to,
   force,
   navigate,
@@ -16,6 +17,10 @@ const Link = ({
 }) => {
   const handleClick = (e) => {
     e.preventDefault();
+
+    if (typeof onClick === 'function') {
+      onClick(e);
+    }
     navigate(to, force);
   };
 
@@ -43,6 +48,7 @@ Link.defaultProps = {
   force: false,
   ignoreClasses: [],
   route: null,
+  onClick: null,
 };
 
 Link.propTypes = {
@@ -51,6 +57,7 @@ Link.propTypes = {
   className: PropTypes.string,
   ignoreClasses: PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
   matchRoute: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   to: PropTypes.string.isRequired,
   force: PropTypes.bool,
   navigate: PropTypes.func.isRequired,
