@@ -247,11 +247,15 @@ describe('<Link />', () => {
         route={linkRoute}
         to="/clients"
         matchRoute={matchRoute(linkRoute.name)}
+        className="customClass"
       >
         link
       </Link>
     );
+
     expect(wrapper.getElement().props.className).to.not.include(`${baseClass}--active`);
     expect(wrapper.getElement().props.className).to.not.include(`${baseClass}--tree`);
+    expect(wrapper.getElement().props.className).to.include(baseClass);
+    expect(wrapper.getElement().props.className).to.include(' customClass');
   });
 });
