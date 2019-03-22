@@ -24,26 +24,26 @@ const Link = ({
     navigate(to, force);
   };
 
-  let classes = baseClass;
+  let classes = [baseClass];
 
   if (Array.isArray(ignoreClasses) || ignoreClasses === false) {
     if (
       route && to === route.path
-      && (ignoreClasses === true || !ignoreClasses.includes('active'))
+      && (ignoreClasses === false || !ignoreClasses.includes('active'))
     ) {
-      classes = classes.concat(` ${baseClass}--active`);
+      classes.push(`${baseClass}--active`);
     }
 
     if (
       matchRoute(RouteFactory.parse(to).name)
-      && (ignoreClasses === true || !ignoreClasses.includes('tree'))
+      && (ignoreClasses === false || !ignoreClasses.includes('tree'))
     ) {
-      classes = classes.concat(` ${baseClass}--tree`);
+      classes.push(`${baseClass}--tree`);
     }
   }
 
   return (
-    <a className={classes.concat(` ${className}`)} href={to}  onClick={handleClick}>
+    <a className={classes.join(' ').concat(className)} href={to}  onClick={handleClick}>
       {children}
     </a>
   );
@@ -54,7 +54,7 @@ Link.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   matchRoute: PropTypes.func.isRequired,
-  ignoreClasses: PropTypes.oneOf([
+  ignoreClasses: PropTypes.oneOfType([
     PropTypes.bool,
     PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
   ]),
