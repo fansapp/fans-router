@@ -26,13 +26,20 @@ const Link = ({
 
   let classes = baseClass;
 
+  if (Array.isArray(ignoreClasses) || ignoreClasses === false) {
+    if (
+      route && to === route.path
+      && (ignoreClasses === true || !ignoreClasses.includes('active'))
+    ) {
+      classes = classes.concat(` ${baseClass}--active`);
+    }
 
-  if (route && to === route.path && !ignoreClasses.includes('active')) {
-    classes = classes.concat(` ${baseClass}--active`);
-  }
-
-  if (matchRoute(RouteFactory.parse(to).name) && !ignoreClasses.includes('tree')) {
-    classes = classes.concat(` ${baseClass}--tree`);
+    if (
+      matchRoute(RouteFactory.parse(to).name)
+      && (ignoreClasses === true || !ignoreClasses.includes('tree'))
+    ) {
+      classes = classes.concat(` ${baseClass}--tree`);
+    }
   }
 
   return (
@@ -46,8 +53,11 @@ Link.propTypes = {
   baseClass: PropTypes.string,
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  ignoreClasses: PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
   matchRoute: PropTypes.func.isRequired,
+  ignoreClasses: PropTypes.oneOf(
+    PropTypes.bool,
+    PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree']))
+  ),
   onClick: PropTypes.func,
   to: PropTypes.string.isRequired,
   force: PropTypes.bool,
@@ -64,7 +74,7 @@ Link.defaultProps = {
   baseClass: 'Link',
   className: '',
   force: false,
-  ignoreClasses: [],
+  ignoreClasses: false,
   route: null,
   onClick: null,
 };
