@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-
 import { nested, routes as flat } from './mocks';
 import normalizeRoutes from '../utils/normalizeRoutes';
 
