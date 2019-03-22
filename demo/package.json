@@ -1,5 +1,5 @@
 {
-  "name": "onboarding-web-app",
+  "name": "fans-router-demo",
   "version": "0.1.0",
   "description": "Onboarding Web App",
   "main": "src/index.js",
@@ -58,7 +58,6 @@
     "query-string": "4.3.4",
     "react": "15.6.1",
     "react-dom": "15.6.1",
-    "react-hot-loader": "3.0.0-beta.7",
     "react-redux": "4.4.8",
     "react-transition-group": "1.2.0",
     "redux": "3.7.1",
@@ -71,7 +70,6 @@
     "stylelint-config-standard": "16.0.0",
     "webpack": "2.6.1",
     "webpack-create-file-plugin": "0.1.0",
-    "webpack-dev-middleware": "1.10.2",
-    "webpack-hot-middleware": "2.18.0"
+    "webpack-dev-middleware": "1.10.2"
   }
 }
