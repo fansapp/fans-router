@@ -54,10 +54,10 @@ Link.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   matchRoute: PropTypes.func.isRequired,
-  ignoreClasses: PropTypes.oneOf(
+  ignoreClasses: PropTypes.oneOf([
     PropTypes.bool,
-    PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree']))
-  ),
+    PropTypes.arrayOf(PropTypes.oneOf(['active', 'tree'])),
+  ]),
   onClick: PropTypes.func,
   to: PropTypes.string.isRequired,
   force: PropTypes.bool,
