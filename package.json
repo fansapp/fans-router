@@ -1,6 +1,6 @@
 {
   "name": "fans-router",
-  "version": "4.0.0-beta.1",
+  "version": "4.0.0-beta.2",
   "description": "An opinionated react-redux router library.",
   "main": "./dist/index.js",
   "directories": {
@@ -40,7 +40,8 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.24.1",
     "chai": "^4.0.2",
-    "enzyme": "^2.9.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.2",
     "es6-promise": "^4.1.0",
     "eslint": "^4.0.0",
     "eslint-plugin-react": "^7.1.0",
