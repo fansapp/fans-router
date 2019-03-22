@@ -18,7 +18,7 @@ const Link = ({
   const handleClick = (e) => {
     e.preventDefault();
 
-    if (typeof onClick === 'function') {
+    if (onClick) {
       onClick(e);
     }
     navigate(to, force);
@@ -42,15 +42,6 @@ const Link = ({
   );
 };
 
-Link.defaultProps = {
-  baseClass: 'Link',
-  className: '',
-  force: false,
-  ignoreClasses: [],
-  route: null,
-  onClick: null,
-};
-
 Link.propTypes = {
   baseClass: PropTypes.string,
   children: PropTypes.node.isRequired,
@@ -67,6 +58,15 @@ Link.propTypes = {
     params: PropTypes.shape().isRequired,
     path: PropTypes.string.isRequired,
   }),
+};
+
+Link.defaultProps = {
+  baseClass: 'Link',
+  className: '',
+  force: false,
+  ignoreClasses: [],
+  route: null,
+  onClick: null,
 };
 
 export default Link;

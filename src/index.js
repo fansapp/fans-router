@@ -1,6 +1,6 @@
 import actionTypes from './constants/actionTypes';
 import createRouter from './createRouter';
-import FansRouterProvider from './components/Provider';
+import Provider from './components/Provider';
 import Link from './components/LinkContainer';
 import { navigate, reload } from './actions';
 import normalizeRoutes from './utils/normalizeRoutes';
@@ -19,7 +19,7 @@ export default {
   replace,
   navigate,
   normalizeRoutes,
-  Provider: FansRouterProvider,
+  Provider,
   routerPropTypes: propTypes,
   reducer,
   ...selectors,
