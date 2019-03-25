@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { parse, stringify } from 'query-string';
-
 import { routes, nested } from './mocks';
 import RouteFactory from '../routeFactory';
 import errorMessages from '../constants/errorMessages';
