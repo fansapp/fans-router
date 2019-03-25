@@ -43,7 +43,7 @@ const Link = ({
   }
 
   return (
-    <a className={classes.join(' ').concat(` ${className}`)} href={to}  onClick={handleClick}>
+    <a className={classes.join(' ').concat(className)} href={to}  onClick={handleClick}>
       {children}
     </a>
   );
