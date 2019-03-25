@@ -85,7 +85,7 @@ const App = ({ route }) => (
 
 export default (
   <Provider store={store}>
-    <RouterProvider router={createRouter(routes)} store={store}>
+    <RouterProvider router={createRouter(routes)}>
       {App}
     </RouterProvider>
   </Provider>
@@ -419,27 +419,13 @@ render() {
 }
 ```
 
-#### Props
-
-##### `baseClass`
-The base CSS class for this component, will use this base class for `--active` and `--tree` modifiers (`Link` by default)
-
-##### `className`
-Additional CSS classes you wish to add
-
-##### `ignoreClasses`
-- Array of strings: (`active` and/or `tree` are the possible values), specifies which CSS modifiers explained above will be omitted.
-- Boolean: indicates if classes should be applied to the element.
-
-##### `onClick`
-Function to be fired when the link is clicked
-
-##### `to`
-Path where the link will point to (ex: `/user/123/edit`), will be validated by the router, thus failing if it does not exist
-
-##### `force`
-Optional prop - `false` by default) - If true, clicking on the Link will cause a navigate even if you're on the same path.
-
+**Props**
+- `baseClass` - The base CSS class for this component, will use this base class for `--active` and `--tree` modifiers (`Link` by default)
+- `className` - Additional CSS classes you wish to add
+- `ignoreClasses` - Array of strings (`active` and/or `tree` are the possible avlues), specifies which CSS modifiers explained above will be omitted
+- `onClick` - Function to be fired when the link is clicked
+- `to` - Path where the link will point to (ex: `/user/123/edit`), will be validated by the router, thus failing if it does not exist
+- `force` (Optional prop - `false` by default) - If true, clicking on the Link will cause a navigate even if you're on the same path.
 
 ## `Actions`
 
