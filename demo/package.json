@@ -51,7 +51,7 @@
     "fans-rest": "1.1.0",
     "history": "^4.9.0",
     "isomorphic-fetch": "2.2.1",
-    "lodash": "4.17.4",
+    "lodash": "4.17.11",
     "mocha": "3.4.2",
     "node-sass": "4.5.3",
     "prop-types": "15.5.10",
